@@ -1,0 +1,120 @@
+plugins {
+	id 'fabric-loom' version '0.2.5-SNAPSHOT'
+	id 'maven-publish'
+	id "org.ajoberstar.grgit" version "3.1.1"
+}
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+archivesBaseName = 'darkness'
+group = 'grondag'
+def version_tag = 'darkness_version'
+
+if (grgit == null) {
+	version = '99.0.0-nogit'
+} else if (project.hasProperty(version_tag)) {
+	if(grgit.status().isClean()) {
+		version = project.getProperty(version_tag) + '.' + grgit.log().size() + '+' + project.minecraft_version
+	} else {
+		version = project.getProperty(version_tag) + '.' + (grgit.log().size() + 1) + '-snapshot+' + project.minecraft_version
+	}
+} else {
+	version = '99.0.0-local'
+}
+
+minecraft {
+}
+
+repositories {
+    mavenLocal()
+    maven { url "https://tehnut.info/maven"}
+    maven { url "http://maven.sargunv.s3-website-us-west-2.amazonaws.com/" }
+    maven { url "https://minecraft.curseforge.com/api/maven" }
+    maven { url "https://maven.fabricmc.net/io/github/prospector/modmenu/ModMenu/" }
+    maven { url "https://maven.jamieswhiteshirt.com/libs-release/"}
+    maven {
+      name = "Cotton"
+      url = "http://server.bbkr.space:8081/artifactory/libs-release/"
+    }
+ 	maven {
+    	name = "grondag"
+    	url = "https://grondag-repo.appspot.com"
+    	credentials {
+            username "guest"
+            password ""
+		}
+    }
+}
+
+dependencies {
+	//to change the versions see the gradle.properties file
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings "net.fabricmc:yarn:${project.yarn_mappings}"
+	modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
+	
+	// dev env annotation support
+	compile "org.apiguardian:apiguardian-api:1.0.0"
+	compile "com.google.code.findbugs:jsr305:3.0.2"
+}
+
+processResources {
+	inputs.property "version", project.version
+
+	from(sourceSets.main.resources.srcDirs) {
+		include "fabric.mod.json"
+		expand "version": project.version
+	}
+
+	from(sourceSets.main.resources.srcDirs) {
+		exclude "fabric.mod.json"
+	}
+}
+
+// ensure that the encoding is set to UTF-8, no matter what the system default is
+// this fixes some edge cases with special characters not displaying correctly
+// see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
+tasks.withType(JavaCompile) {
+	options.encoding = "UTF-8"
+}
+
+// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+// if it is present.
+// If you remove this task, sources will not be generated.
+task sourcesJar(type: Jar, dependsOn: classes) {
+	classifier = "sources"
+	from sourceSets.main.allSource
+}
+
+jar {
+	from "LICENSE"
+}
+
+// configure the maven publication
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			artifact(remapJar) {
+				builtBy remapJar
+			}
+			artifact(sourcesJar) {
+				builtBy remapSourcesJar
+			}
+		}
+	}
+
+	repositories {
+		mavenLocal()
+		maven {
+            url "https://grondag-repo.appspot.com"
+            credentials {
+				if (project.hasProperty('maven_user')){
+					username = project.getProperty('maven_user')
+				}
+				if (project.hasProperty('maven_password')){
+					password = project.getProperty('maven_password')
+				}
+			}
+        }
+	}
+}
