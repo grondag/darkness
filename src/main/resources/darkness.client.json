@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "grondag.darkness.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+	"MixinLightmapTextureManager"
+      ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
