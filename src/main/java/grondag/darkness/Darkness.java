@@ -19,17 +19,13 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 public class Darkness {
-    public static float computeAmbient(World world, float oldWeight, float oldAmbient) {
-        final float moon = world.getMoonSize();
-        final float result = MathHelper.lerp(oldWeight, oldAmbient * moon * moon, oldAmbient);
-        return result;
-    }
-    
     public static float computeOldWeight(World world) {
         final float angle = world.getSkyAngle(0);
       if(angle > 0.25f && angle < 0.75f) {
-          final float oldWeight = Math.abs(angle - 0.5f) * 4;
-          return oldWeight * oldWeight * oldWeight;
+          final float oldWeight = Math.max(0,(Math.abs(angle - 0.5f) - 0.2f)) * 20;
+          final float moon = world.getMoonSize();
+          float result = MathHelper.lerp(oldWeight * oldWeight * oldWeight, moon * moon, 1f);
+          return result;
       } else {
           return 1f;
       }

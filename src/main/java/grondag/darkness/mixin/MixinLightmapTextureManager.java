@@ -16,10 +16,14 @@
 package grondag.darkness.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Constant;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import grondag.darkness.Darkness;
 import net.minecraft.client.MinecraftClient;
@@ -29,20 +33,27 @@ import net.minecraft.world.World;
 @Mixin(LightmapTextureManager.class)
 public class MixinLightmapTextureManager {
 
+    @Shadow private boolean isDirty;
+    @Shadow private MinecraftClient client;
+    
     private float oldWeight = 1f;
+    
+    /** main purpose is to workaround mixin/loader bug that doesn't output refmap without an inject */
+    @Inject(method = "update", at = @At(value = "HEAD"))
+    private void computeWeight(CallbackInfo ci) {
+        if(isDirty) {
+            final World world = client.world;
+            if(world != null) {
+                oldWeight = Darkness.computeOldWeight(world);
+            } else {
+                oldWeight = 1f;
+            }
+        }
+    }
     
     @ModifyVariable(method = "update", at = @At(value = "STORE"), ordinal = 1, allow = 1, require = 1)
     private float makeItDark(float oldAmbient) {
-        final World world = MinecraftClient.getInstance().world;
-        if(world != null && world.dimension.hasVisibleSky()) {
-            oldWeight = Darkness.computeOldWeight(world);
-            if(oldWeight != 1f) {
-                return Darkness.computeAmbient(world, oldWeight, oldAmbient);
-            }
-        } else {
-            oldWeight = 1f;
-        }
-        return oldAmbient;
+        return oldAmbient * oldWeight;
     }
     
     @ModifyConstant( constant = @Constant(floatValue = 0.05F),method = "update" )
@@ -63,5 +74,10 @@ public class MixinLightmapTextureManager {
     @ModifyConstant( constant = @Constant(floatValue = 0.03F),method = "update" )
     private float modifyCorrectionMin(float originalValue) {
         return originalValue * oldWeight;
+    }
+    
+    @ModifyArg(at = @At(value = "INVOKE", target="Lnet/minecraft/client/texture/NativeImage;setPixelRGBA(III)V"), method = "update", index = 2)
+    private int hookSetPixel(int blockCounter, int skyCounter, int color) {
+        return blockCounter == 0 && skyCounter == 0 ? 0xFF000000 : color;
     }
 }
