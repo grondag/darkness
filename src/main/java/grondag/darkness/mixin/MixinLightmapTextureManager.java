@@ -37,6 +37,7 @@ public class MixinLightmapTextureManager {
     @Shadow private MinecraftClient client;
     
     private float oldWeight = 1f;
+    private boolean hasSky = false;
     
     /** main purpose is to workaround mixin/loader bug that doesn't output refmap without an inject */
     @Inject(method = "update", at = @At(value = "HEAD"))
@@ -45,8 +46,10 @@ public class MixinLightmapTextureManager {
             final World world = client.world;
             if(world != null) {
                 oldWeight = Darkness.computeOldWeight(world);
+                hasSky = world.dimension.hasSkyLight();
             } else {
                 oldWeight = 1f;
+                hasSky = false;
             }
         }
     }
@@ -78,6 +81,6 @@ public class MixinLightmapTextureManager {
     
     @ModifyArg(at = @At(value = "INVOKE", target="Lnet/minecraft/client/texture/NativeImage;setPixelRGBA(III)V"), method = "update", index = 2)
     private int hookSetPixel(int blockCounter, int skyCounter, int color) {
-        return blockCounter == 0 && skyCounter == 0 ? 0xFF000000 : color;
+        return hasSky && blockCounter == 0 && skyCounter == 0 ? 0xFF000000 : color;
     }
 }
