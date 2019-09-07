@@ -3,7 +3,11 @@
   "package": "grondag.darkness.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-	"MixinLightmapTextureManager"
+    "MixinGameRenderer",
+	"MixinLightmapTextureManager",
+	"MixinNativeImageBackedTexture",
+    "MixinTheEndDimension",
+	"MixinTheNetherDimension"
       ],
   "injectors": {
     "defaultRequire": 1

@@ -13,6 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
+
 package grondag.darkness.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -21,31 +22,24 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import grondag.darkness.Darkness;
 import grondag.darkness.LightmapAccess;
-import grondag.darkness.TextureAccess;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.client.texture.NativeImageBackedTexture;
 
-@Mixin(LightmapTextureManager.class)
-public class MixinLightmapTextureManager implements LightmapAccess {
-
-    @Shadow private NativeImageBackedTexture texture;
-    @Shadow private float prevFlicker;
-    @Shadow private boolean isDirty;
+@Mixin(GameRenderer.class)
+public class MixinGameRenderer {
+    @Shadow private MinecraftClient client;
+    @Shadow private LightmapTextureManager lightmapTextureManager;
     
-    @Inject(method = "<init>*", at = @At(value = "RETURN"))
-    private void afterInit(GameRenderer gameRenderer, CallbackInfo ci) {
-        ((TextureAccess)texture).darkness_enableUploadHook();
-    }
-    
-    @Override
-    public float darkness_prevFlicker() {
-        return prevFlicker;
-    }
-
-    @Override
-    public boolean darkness_isDirty() {
-        return isDirty;
+    @Inject(method = "renderWorld", at = @At(value = "HEAD"))
+    private void onRenderWorld(float tickDelta, long nanos, CallbackInfo ci) {
+        final LightmapAccess lightmap = (LightmapAccess)lightmapTextureManager;
+        if(lightmap.darkness_isDirty()) {
+            client.getProfiler().push("lightTex");
+            Darkness.updateLuminance(tickDelta, client, (GameRenderer)(Object)this, lightmap.darkness_prevFlicker());
+            client.getProfiler().pop();
+        }
     }
 }
