@@ -62,10 +62,32 @@ public class Darkness {
         darkOverworld = properties.computeIfAbsent("dark_overworld", (a) -> "true").equals("true");
         darkDefault = properties.computeIfAbsent("dark_default", (a) -> "true").equals("true");
         darkNether = properties.computeIfAbsent("dark_nether", (a) -> "true").equals("true");
-        darkNetherFog = Double.parseDouble(properties.computeIfAbsent("dark_nether_fog", (a) -> "0.5").toString());
         darkEnd = properties.computeIfAbsent("dark_end", (a) -> "true").equals("true");
-        darkEndFog = Double.parseDouble(properties.computeIfAbsent("dark_end_fog", (a) -> "0.0").toString());
         darkSkyless = properties.computeIfAbsent("dark_skyless", (a) -> "true").equals("true");
+
+        double fog = darkNether ? 0.5 : 1.0;
+        if (darkNether) {
+            try {
+                fog = Double.parseDouble(properties.computeIfAbsent("dark_nether_fog", (a) -> "0.5").toString());
+                fog = MathHelper.clamp(fog, 0.0, 1.0);
+            } catch (Exception e) {
+                fog = 0.5;
+                LOG.warn("Invalid configuration value for 'dark_nether_fog'. Using default value.");
+            }
+        }
+        darkNetherFog = fog;
+
+        fog = darkNether ? 0.0 : 1.0;
+        if (darkNether) {
+            try {
+                fog = Double.parseDouble(properties.computeIfAbsent("dark_end_fog", (a) -> "0.0").toString());
+                fog = MathHelper.clamp(fog, 0.0, 1.0);
+            } catch (Exception e) {
+                fog = 0.0;
+                LOG.warn("Invalid configuration value for 'dark_end_fog'. Using default value.");
+            }
+        }
+        darkEndFog = fog;
         
         try (FileOutputStream stream = new FileOutputStream(configFile)) {
             properties.store(stream, "Darkness properties file");
