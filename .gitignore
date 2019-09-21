@@ -15,9 +15,13 @@ bin
 eclipse
 
 ## gradle
+gradlew*
+gradle
 .gradle
 build
 run
+
+
 
 ##idea
 *.iml
@@ -43,5 +47,5 @@ discarded textures
 *.nps
 /.apt_generated/
 notes.txt
-.mixin.out/audit/mixin_implementation_report.csv
+*.csv
 .mixin.out/audit/mixin_implementation_report.txt
