@@ -23,6 +23,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import grondag.darkness.LightmapAccess;
 import grondag.darkness.TextureAccess;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.texture.NativeImageBackedTexture;
@@ -30,22 +31,25 @@ import net.minecraft.client.texture.NativeImageBackedTexture;
 @Mixin(LightmapTextureManager.class)
 public class MixinLightmapTextureManager implements LightmapAccess {
 
-    @Shadow private NativeImageBackedTexture texture;
-    @Shadow private float prevFlicker;
-    @Shadow private boolean isDirty;
-    
-    @Inject(method = "<init>*", at = @At(value = "RETURN"))
-    private void afterInit(GameRenderer gameRenderer, CallbackInfo ci) {
-        ((TextureAccess)texture).darkness_enableUploadHook();
-    }
-    
-    @Override
-    public float darkness_prevFlicker() {
-        return prevFlicker;
-    }
+	@Shadow
+	private NativeImageBackedTexture texture;
+	@Shadow
+	private float prevFlicker;
+	@Shadow
+	private boolean isDirty;
 
-    @Override
-    public boolean darkness_isDirty() {
-        return isDirty;
-    }
+	@Inject(method = "<init>*", at = @At(value = "RETURN"))
+	private void afterInit(GameRenderer gameRenderer, MinecraftClient minecraftClient, CallbackInfo ci) {
+		((TextureAccess) texture).darkness_enableUploadHook();
+	}
+
+	@Override
+	public float darkness_prevFlicker() {
+		return prevFlicker;
+	}
+
+	@Override
+	public boolean darkness_isDirty() {
+		return isDirty;
+	}
 }

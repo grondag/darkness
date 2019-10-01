@@ -32,25 +32,26 @@ import net.minecraft.client.texture.NativeImageBackedTexture;
 
 @Mixin(NativeImageBackedTexture.class)
 public class MixinNativeImageBackedTexture implements TextureAccess {
-    @Shadow NativeImage image;
-    
-    private boolean enableHook = false;
-    
-    @Inject(method = "upload", at = @At(value = "HEAD"))
-    private void onRenderWorld(CallbackInfo ci) {
-        if(enableHook && enabled) {
-            final NativeImage img = image;
-            for (int b = 0; b < 16; b++) {
-                for (int s = 0; s < 16; s++) {
-                    int color = Darkness.darken(img.getPixelRGBA(b, s), luminance[b][s], b, s);
-                    img.setPixelRGBA(b, s, color);
-                }
-            }
-        }
-    }
+	@Shadow
+	NativeImage image;
 
-    @Override
-    public void darkness_enableUploadHook() {
-        enableHook = true;
-    }
+	private boolean enableHook = false;
+
+	@Inject(method = "upload", at = @At(value = "HEAD"))
+	private void onRenderWorld(CallbackInfo ci) {
+		if (enableHook && enabled) {
+			final NativeImage img = image;
+			for (int b = 0; b < 16; b++) {
+				for (int s = 0; s < 16; s++) {
+					int color = Darkness.darken(img.getPixelRGBA(b, s), luminance[b][s], b, s);
+					img.setPixelRGBA(b, s, color);
+				}
+			}
+		}
+	}
+
+	@Override
+	public void darkness_enableUploadHook() {
+		enableHook = true;
+	}
 }

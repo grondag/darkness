@@ -27,18 +27,21 @@ import net.minecraft.world.dimension.TheNetherDimension;
 
 @Mixin(TheNetherDimension.class)
 public class MixinTheNetherDimension {
-    private static Vec3d darkFog = null;
-    
-    @Inject(method = "getFogColor", at = @At(value = "RETURN"), cancellable = true)
-    private void onGetFogColor(CallbackInfoReturnable<Vec3d> ci) {
-        final double factor = Darkness.darkNetherFog();
-        if (factor != 1.0) {
-            Vec3d result = darkFog;
-            if (result == null) {
-                result = ci.getReturnValue().multiply(factor);
-                darkFog = result;
-            }
-            ci.setReturnValue(result);
-        }
-    }
+	private static Vec3d darkFog = null;
+
+	@Inject(method = "getFogColor", at = @At(value = "RETURN"), cancellable = true)
+	private void onGetFogColor(CallbackInfoReturnable<Vec3d> ci) {
+		final double factor = Darkness.darkNetherFog();
+
+		if (factor != 1.0) {
+			Vec3d result = darkFog;
+
+			if (result == null) {
+				result = ci.getReturnValue().multiply(factor);
+				darkFog = result;
+			}
+
+			ci.setReturnValue(result);
+		}
+	}
 }

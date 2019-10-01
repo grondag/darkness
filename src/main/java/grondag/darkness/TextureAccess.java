@@ -17,5 +17,5 @@
 package grondag.darkness;
 
 public interface TextureAccess {
-    void darkness_enableUploadHook();
+	void darkness_enableUploadHook();
 }

@@ -27,18 +27,21 @@ import net.minecraft.world.dimension.TheEndDimension;
 
 @Mixin(TheEndDimension.class)
 public class MixinTheEndDimension {
-    private static Vec3d darkFog = null;
-    
-    @Inject(method = "getFogColor", at = @At(value = "RETURN"), cancellable = true)
-    private void onGetFogColor(CallbackInfoReturnable<Vec3d> ci) {
-        final double factor = Darkness.darkEndFog();
-        if (factor != 1.0) {
-            Vec3d result = darkFog;
-            if (result == null) {
-                result = ci.getReturnValue().multiply(factor);
-                darkFog = result;
-            }
-            ci.setReturnValue(result);
-        }
-    }
+	private static Vec3d darkFog = null;
+
+	@Inject(method = "getFogColor", at = @At(value = "RETURN"), cancellable = true)
+	private void onGetFogColor(CallbackInfoReturnable<Vec3d> ci) {
+		final double factor = Darkness.darkEndFog();
+
+		if (factor != 1.0) {
+			Vec3d result = darkFog;
+
+			if (result == null) {
+				result = ci.getReturnValue().multiply(factor);
+				darkFog = result;
+			}
+
+			ci.setReturnValue(result);
+		}
+	}
 }

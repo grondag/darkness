@@ -24,22 +24,26 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import grondag.darkness.Darkness;
 import grondag.darkness.LightmapAccess;
+import net.minecraft.class_4587;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.LightmapTextureManager;
 
 @Mixin(GameRenderer.class)
 public class MixinGameRenderer {
-    @Shadow private MinecraftClient client;
-    @Shadow private LightmapTextureManager lightmapTextureManager;
-    
-    @Inject(method = "renderWorld", at = @At(value = "HEAD"))
-    private void onRenderWorld(float tickDelta, long nanos, CallbackInfo ci) {
-        final LightmapAccess lightmap = (LightmapAccess)lightmapTextureManager;
-        if(lightmap.darkness_isDirty()) {
-            client.getProfiler().push("lightTex");
-            Darkness.updateLuminance(tickDelta, client, (GameRenderer)(Object)this, lightmap.darkness_prevFlicker());
-            client.getProfiler().pop();
-        }
-    }
+	@Shadow
+	private MinecraftClient client;
+	@Shadow
+	private LightmapTextureManager lightmapTextureManager;
+
+	@Inject(method = "renderWorld", at = @At(value = "HEAD"))
+	private void onRenderWorld(float tickDelta, long nanos, class_4587 matrixStack, CallbackInfo ci) {
+		final LightmapAccess lightmap = (LightmapAccess) lightmapTextureManager;
+		
+		if (lightmap.darkness_isDirty()) {
+			client.getProfiler().push("lightTex");
+			Darkness.updateLuminance(tickDelta, client, (GameRenderer) (Object) this, lightmap.darkness_prevFlicker());
+			client.getProfiler().pop();
+		}
+	}
 }
