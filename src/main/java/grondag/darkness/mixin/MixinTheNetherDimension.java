@@ -29,7 +29,6 @@ import grondag.darkness.Darkness;
 @Mixin(TheNetherDimension.class)
 public class MixinTheNetherDimension {
 	private static Vec3d darkFog = null;
-
 	private static double MIN = 0.029999999329447746D;
 
 	@Inject(method = "getFogColor", at = @At(value = "RETURN"), cancellable = true)
