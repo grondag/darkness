@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2019 grondag
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
  * of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -24,13 +24,16 @@ import java.util.Properties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.dimension.DimensionType;
+
+import net.fabricmc.loader.api.FabricLoader;
 
 public class Darkness {
 	public static Logger LOG = LogManager.getLogger("Darkness");
@@ -44,17 +47,17 @@ public class Darkness {
 	private static final boolean darkSkyless;
 
 	static {
-		File configDir = FabricLoader.getInstance().getConfigDirectory();
+		final File configDir = FabricLoader.getInstance().getConfigDirectory();
 		if (!configDir.exists()) {
 			LOG.warn("[Darkness] Could not access configuration directory: " + configDir.getAbsolutePath());
 		}
 
-		File configFile = new File(configDir, "darkness.properties");
-		Properties properties = new Properties();
+		final File configFile = new File(configDir, "darkness.properties");
+		final Properties properties = new Properties();
 		if (configFile.exists()) {
 			try (FileInputStream stream = new FileInputStream(configFile)) {
 				properties.load(stream);
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				LOG.warn("[Darkness] Could not read property file '" + configFile.getAbsolutePath() + "'", e);
 			}
 		}
@@ -70,7 +73,7 @@ public class Darkness {
 			try {
 				fog = Double.parseDouble(properties.computeIfAbsent("dark_nether_fog", (a) -> "0.5").toString());
 				fog = MathHelper.clamp(fog, 0.0, 1.0);
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				fog = 0.5;
 				LOG.warn("Invalid configuration value for 'dark_nether_fog'. Using default value.");
 			}
@@ -82,7 +85,7 @@ public class Darkness {
 			try {
 				fog = Double.parseDouble(properties.computeIfAbsent("dark_end_fog", (a) -> "0.0").toString());
 				fog = MathHelper.clamp(fog, 0.0, 1.0);
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				fog = 0.0;
 				LOG.warn("Invalid configuration value for 'dark_end_fog'. Using default value.");
 			}
@@ -91,7 +94,7 @@ public class Darkness {
 
 		try (FileOutputStream stream = new FileOutputStream(configFile)) {
 			properties.store(stream, "Darkness properties file");
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			LOG.warn("[Indigo] Could not store property file '" + configFile.getAbsolutePath() + "'", e);
 		}
 	}
@@ -155,10 +158,10 @@ public class Darkness {
 	}
 
 	public static void updateLuminance(float tickDelta, MinecraftClient client, GameRenderer worldRenderer, float prevFlicker) {
-		World world = client.world;
+		final ClientWorld world = client.world;
 		if (world != null) {
 
-			if (client.player.hasStatusEffect(StatusEffects.NIGHT_VISION) || (client.player.hasStatusEffect(StatusEffects.CONDUIT_POWER) && client.player.method_3140() > 0) || world.getTicksSinceLightning() > 0) {
+			if (client.player.hasStatusEffect(StatusEffects.NIGHT_VISION) || (client.player.hasStatusEffect(StatusEffects.CONDUIT_POWER) && client.player.method_3140() > 0) || world.getLightningTicksLeft() > 0) {
 				enabled = false;
 				return;
 			} else {
@@ -166,8 +169,8 @@ public class Darkness {
 			}
 
 			final float dimSkyFactor = Darkness.skyFactor(world);
-			final float ambient = world.getAmbientLight(1.0F);
-			final float[] brightness = world.dimension.getLightLevelToBrightness();
+			final float ambient = world.method_23783(1.0F);
+			final Dimension dim = world.dimension;
 			final boolean blockAmbient = !Darkness.isDark(world);
 
 			for (int skyIndex = 0; skyIndex < 16; ++skyIndex) {
@@ -178,7 +181,7 @@ public class Darkness {
 				float min = skyFactor * 0.05f;
 				final float rawAmbient = ambient * skyFactor;
 				final float minAmbient = rawAmbient * (1 - min) + min;
-				final float skyBase = brightness[skyIndex] * minAmbient;
+				final float skyBase = dim.getBrightness(skyIndex) * minAmbient;
 
 				min = 0.35f * skyFactor;
 				float skyRed = skyBase * (rawAmbient * (1 - min) + min);
@@ -199,7 +202,7 @@ public class Darkness {
 						blockFactor = 1 - blockFactor * blockFactor * blockFactor * blockFactor;
 					}
 
-					final float blockBase = blockFactor * brightness[blockIndex] * (prevFlicker * 0.1F + 1.5F);
+					final float blockBase = blockFactor * dim.getBrightness(blockIndex) * (prevFlicker * 0.1F + 1.5F);
 					min = 0.4f * blockFactor;
 					final float blockGreen = blockBase * ((blockBase * (1 - min) + min) * (1 - min) + min);
 					final float blockBlue = blockBase * (blockBase * blockBase * (1 - min) + min);
