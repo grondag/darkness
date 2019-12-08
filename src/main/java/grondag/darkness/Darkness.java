@@ -142,18 +142,20 @@ public class Darkness {
 	}
 
 	public static boolean enabled = false;
-	public static final float[][] luminance = new float[16][16];
+	private static final float[][] LUMINANCE = new float[16][16];
 
-	public static int darken(int c, float luminance, int blockIndex, int skyIndex) {
+	public static int darken(int c, int blockIndex, int skyIndex) {
+		final float lTarget = LUMINANCE[blockIndex][skyIndex];
 		final float r = (c & 0xFF) / 255f;
 		final float g = ((c >> 8) & 0xFF) / 255f;
 		final float b = ((c >> 16) & 0xFF) / 255f;
-		final float l = luminance(r, g, b, blockIndex, skyIndex);
-		final float f = l > 0 ? (luminance / l) : 0;
-		return 0xFF000000 | Math.round(f * r * 255) | (Math.round(f * g * 255) << 8) | (Math.round(f * b * 255) << 16);
+		final float l = luminance(r, g, b);
+		final float f = l > 0 ? Math.min(1, lTarget / l) : 0;
+
+		return f == 1f ? c : 0xFF000000 | Math.round(f * r * 255) | (Math.round(f * g * 255) << 8) | (Math.round(f * b * 255) << 16);
 	}
 
-	public static float luminance(float r, float g, float b, int blockIndex, int skyIndex) {
+	public static float luminance(float r, float g, float b) {
 		return r * 0.2126f + g * 0.7152f + b * 0.0722f;
 	}
 
@@ -275,7 +277,7 @@ public class Darkness {
 						blue = 0.0F;
 					}
 
-					luminance[blockIndex][skyIndex] = Darkness.luminance(red, green, blue, blockIndex, skyIndex);
+					LUMINANCE[blockIndex][skyIndex] = Darkness.luminance(red, green, blue);
 				}
 			}
 		}

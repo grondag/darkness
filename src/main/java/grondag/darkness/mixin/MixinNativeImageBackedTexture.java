@@ -17,7 +17,6 @@
 package grondag.darkness.mixin;
 
 import static grondag.darkness.Darkness.enabled;
-import static grondag.darkness.Darkness.luminance;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -44,7 +43,7 @@ public class MixinNativeImageBackedTexture implements TextureAccess {
 			final NativeImage img = image;
 			for (int b = 0; b < 16; b++) {
 				for (int s = 0; s < 16; s++) {
-					final int color = Darkness.darken(img.getPixelRgba(b, s), luminance[b][s], b, s);
+					final int color = Darkness.darken(img.getPixelRgba(b, s), b, s);
 					img.setPixelRgba(b, s, color);
 				}
 			}
