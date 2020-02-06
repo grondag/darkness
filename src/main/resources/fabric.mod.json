@@ -25,7 +25,7 @@
   ],
   "depends": {
     "fabricloader": ">=0.7.1",
-    "minecraft": "~1.15-pre3"
+    "minecraft": "~1.16-alpha"
   },
   "custom": {
     "modmenu:api": false,
