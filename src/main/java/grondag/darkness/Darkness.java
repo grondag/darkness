@@ -163,7 +163,7 @@ public class Darkness {
 		final ClientWorld world = client.world;
 		if (world != null) {
 
-			if (client.player.hasStatusEffect(StatusEffects.NIGHT_VISION) || (client.player.hasStatusEffect(StatusEffects.CONDUIT_POWER) && client.player.method_3140() > 0) || world.getLightningTicksLeft() > 0) {
+			if (client.player.hasStatusEffect(StatusEffects.NIGHT_VISION) || (client.player.hasStatusEffect(StatusEffects.CONDUIT_POWER) && client.player.getUnderwaterVisibility() > 0) || world.getLightningTicksLeft() > 0) {
 				enabled = false;
 				return;
 			} else {

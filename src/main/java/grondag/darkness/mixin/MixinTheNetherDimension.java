@@ -28,22 +28,15 @@ import grondag.darkness.Darkness;
 
 @Mixin(TheNetherDimension.class)
 public class MixinTheNetherDimension {
-	private static Vec3d darkFog = null;
 	private static double MIN = 0.029999999329447746D;
 
-	@Inject(method = "getFogColor", at = @At(value = "RETURN"), cancellable = true)
-	private void onGetFogColor(CallbackInfoReturnable<Vec3d> ci) {
+	@Inject(method = "modifyFogColor", at = @At(value = "RETURN"), cancellable = true)
+	private void onModifyFogColor(CallbackInfoReturnable<Vec3d> ci) {
 		final double factor = Darkness.darkNetherFog();
 
 		if (factor != 1.0) {
-			Vec3d result = darkFog;
-
-			if (result == null) {
-				final Vec3d input = ci.getReturnValue();
-				result = new Vec3d(Math.max(MIN, input.x * factor), Math.max(MIN, input.y * factor), Math.max(MIN, input.z * factor));
-				darkFog = result;
-			}
-
+			Vec3d result = ci.getReturnValue();
+			result = new Vec3d(Math.max(MIN, result.x * factor), Math.max(MIN, result.y * factor), Math.max(MIN, result.z * factor));
 			ci.setReturnValue(result);
 		}
 	}
