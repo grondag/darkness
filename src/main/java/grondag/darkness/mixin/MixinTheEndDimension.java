@@ -21,16 +21,16 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.class_5294.class_5295;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.dimension.TheEndDimension;
 
 import grondag.darkness.Darkness;
 
-@Mixin(TheEndDimension.class)
+@Mixin(class_5295.class)
 public class MixinTheEndDimension {
 	private static double MIN = 0.029999999329447746D;
 
-	@Inject(method = "modifyFogColor", at = @At(value = "RETURN"), cancellable = true)
+	@Inject(method = "method_28112", at = @At(value = "RETURN"), cancellable = true)
 	private void onModifyFogColor(CallbackInfoReturnable<Vec3d> ci) {
 		final double factor = Darkness.darkEndFog();
 

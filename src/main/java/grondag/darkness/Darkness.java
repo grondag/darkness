@@ -108,14 +108,14 @@ public class Darkness {
 	}
 
 	private static boolean isDark(World world) {
-		final DimensionType dimType = world.dimension.getType();
+		final DimensionType dimType = world.getDimension().getType();
 		if (dimType == DimensionType.OVERWORLD) {
 			return darkOverworld;
 		} else if (dimType == DimensionType.THE_NETHER) {
 			return darkNether;
 		} else if (dimType == DimensionType.THE_END) {
 			return darkEnd;
-		} else if (world.dimension.hasSkyLight()) {
+		} else if (world.getDimension().getType().hasSkyLight()) {
 			return darkDefault;
 		} else {
 			return darkSkyless;
@@ -124,7 +124,7 @@ public class Darkness {
 
 	private static float skyFactor(World world) {
 		if (isDark(world)) {
-			if (world.dimension.hasSkyLight()) {
+			if (world.getDimension().getType().hasSkyLight()) {
 				final float angle = world.getSkyAngle(0);
 				if (angle > 0.25f && angle < 0.75f) {
 					final float oldWeight = Math.max(0, (Math.abs(angle - 0.5f) - 0.2f)) * 20;
@@ -172,7 +172,7 @@ public class Darkness {
 
 			final float dimSkyFactor = Darkness.skyFactor(world);
 			final float ambient = world.method_23783(1.0F);
-			final Dimension dim = world.dimension;
+			final Dimension dim = world.getDimension();
 			final boolean blockAmbient = !Darkness.isDark(world);
 
 			for (int skyIndex = 0; skyIndex < 16; ++skyIndex) {
@@ -219,7 +219,7 @@ public class Darkness {
 					green = green * (0.99F - min) + min;
 					blue = blue * (0.99F - min) + min;
 
-					if (world.dimension.getType() == DimensionType.THE_END) {
+					if (world.getDimension().getType() == DimensionType.THE_END) {
 						red = skyFactor * 0.22F + blockBase * 0.75f;
 						green = skyFactor * 0.28F + blockGreen * 0.75f;
 						blue = skyFactor * 0.25F + blockBlue * 0.75f;
