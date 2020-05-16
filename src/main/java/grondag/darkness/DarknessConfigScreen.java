@@ -11,6 +11,7 @@ public class DarknessConfigScreen extends Screen {
 	protected final Screen parent;
 
 	protected CheckboxWidget blockLightOnlyWidget;
+	protected CheckboxWidget ignoreMoonPhaseWidget;
 	protected CheckboxWidget darkOverworldWidget;
 	protected CheckboxWidget darkNetherWidget;
 	protected CheckboxWidget darkEndWidget;
@@ -35,7 +36,7 @@ public class DarknessConfigScreen extends Screen {
 
 	@Override
 	protected void init() {
-		int i = 35;
+		int i = 27;
 		blockLightOnlyWidget = new CheckboxWidget(width / 2 - 100, i, 200, 20, new TranslatableText("config.darkness.label.block_light_only"), Darkness.blockLightOnly) {
 			@Override
 			public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
@@ -43,6 +44,19 @@ public class DarknessConfigScreen extends Screen {
 
 				if (hovered) {
 					DarknessConfigScreen.this.renderTooltip(matrices,  new TranslatableText("config.darkness.help.block_light_only"), mouseX, mouseY);
+				}
+			}
+		};
+
+		i +=  27;
+
+		ignoreMoonPhaseWidget = new CheckboxWidget(width / 2 - 100, i, 200, 20, new TranslatableText("config.darkness.label.ignore_moon_phase"), Darkness.ignoreMoonPhase) {
+			@Override
+			public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+				super.renderButton(matrices, mouseX, mouseY, delta);
+
+				if (hovered) {
+					DarknessConfigScreen.this.renderTooltip(matrices,  new TranslatableText("config.darkness.help.ignore_moon_phase"), mouseX, mouseY);
 				}
 			}
 		};
@@ -115,6 +129,7 @@ public class DarknessConfigScreen extends Screen {
 		i +=  27;
 
 		addButton(blockLightOnlyWidget);
+		addButton(ignoreMoonPhaseWidget);
 		addButton(darkOverworldWidget);
 		addButton(darkNetherWidget);
 		addButton(darkEndWidget);
@@ -123,6 +138,7 @@ public class DarknessConfigScreen extends Screen {
 
 		addButton(new ButtonWidget(width / 2 - 100, height - 27, 200, 20, ScreenTexts.DONE, (buttonWidget) -> {
 			Darkness.blockLightOnly = blockLightOnlyWidget.isChecked();
+			Darkness.ignoreMoonPhase = ignoreMoonPhaseWidget.isChecked();
 			Darkness.darkOverworld = darkOverworldWidget.isChecked();
 			Darkness.darkNether = darkNetherWidget.isChecked();
 			Darkness.darkEnd = darkEndWidget.isChecked();

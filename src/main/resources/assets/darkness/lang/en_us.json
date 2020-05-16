@@ -4,6 +4,9 @@
 	"config.darkness.label.block_light_only": "Affect Block Light Only",
 	"config.darkness.help.block_light_only": "Areas lit by sky will not be fully dark",
 	
+	"config.darkness.label.ignore_moon_phase": "Ignore Moon Phase",
+	"config.darkness.help.ignore_moon_phase": "Night is truly dark even when the moon is full",
+	
 	"config.darkness.label.dark_overworld": "Dark Overworld",
 	"config.darkness.help.dark_overworld": "Enable in Overworld",
 	

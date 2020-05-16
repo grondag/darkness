@@ -48,18 +48,22 @@ public class Darkness {
 	static double darkEndFogConfigured;
 	static boolean darkSkyless;
 	static boolean blockLightOnly;
+	static boolean ignoreMoonPhase;
 
 	static {
 		final File configFile = getConfigFile();
 		final Properties properties = new Properties();
 
-		try (FileInputStream stream = new FileInputStream(configFile)) {
-			properties.load(stream);
-		} catch (final IOException e) {
-			LOG.warn("[Darkness] Could not read property file '" + configFile.getAbsolutePath() + "'", e);
+		if (configFile.exists()) {
+			try (FileInputStream stream = new FileInputStream(configFile)) {
+				properties.load(stream);
+			} catch (final IOException e) {
+				LOG.warn("[Darkness] Could not read property file '" + configFile.getAbsolutePath() + "'", e);
+			}
 		}
 
-		blockLightOnly = properties.computeIfAbsent("only_affect_block_light", (a) -> "false").equals("false");
+		ignoreMoonPhase = properties.computeIfAbsent("ignore_moon_phase", (a) -> "false").equals("true");
+		blockLightOnly = properties.computeIfAbsent("only_affect_block_light", (a) -> "false").equals("true");
 		darkOverworld = properties.computeIfAbsent("dark_overworld", (a) -> "true").equals("true");
 		darkDefault = properties.computeIfAbsent("dark_default", (a) -> "true").equals("true");
 		darkNether = properties.computeIfAbsent("dark_nether", (a) -> "true").equals("true");
@@ -107,6 +111,7 @@ public class Darkness {
 		final Properties properties = new Properties();
 
 		properties.put("only_affect_block_light", Boolean.toString(blockLightOnly));
+		properties.put("ignore_moon_phase", Boolean.toString(ignoreMoonPhase));
 		properties.put("dark_overworld", Boolean.toString(darkOverworld));
 		properties.put("dark_default", Boolean.toString(darkDefault));
 		properties.put("dark_nether", Boolean.toString(darkNether));
@@ -156,7 +161,7 @@ public class Darkness {
 				final float angle = world.getSkyAngle(0);
 				if (angle > 0.25f && angle < 0.75f) {
 					final float oldWeight = Math.max(0, (Math.abs(angle - 0.5f) - 0.2f)) * 20;
-					final float moon = world.getMoonSize();
+					final float moon = ignoreMoonPhase ? 0 : world.getMoonSize();
 					return MathHelper.lerp(oldWeight * oldWeight * oldWeight, moon * moon, 1f);
 				} else {
 					return 1;
