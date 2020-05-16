@@ -18,7 +18,8 @@
 
   "environment": "client",
   "entrypoints": {
-  	"main": []
+  	"main": [],
+  	"modmenu": [ "grondag.darkness.DarknessModMenuHelper" ]
   },
   "mixins": [
   	"darkness.client.json"

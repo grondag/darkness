@@ -38,73 +38,101 @@ import net.fabricmc.loader.api.FabricLoader;
 public class Darkness {
 	public static Logger LOG = LogManager.getLogger("Darkness");
 
-	private static final boolean darkOverworld;
-	private static final boolean darkDefault;
-	private static final boolean darkNether;
-	private static final double darkNetherFog;
-	private static final boolean darkEnd;
-	private static final double darkEndFog;
-	private static final boolean darkSkyless;
+	static boolean darkOverworld;
+	static boolean darkDefault;
+	static boolean darkNether;
+	static double darkNetherFogEffective;
+	static double darkNetherFogConfigured;
+	static boolean darkEnd;
+	static double darkEndFogEffective;
+	static double darkEndFogConfigured;
+	static boolean darkSkyless;
+	static boolean blockLightOnly;
 
 	static {
-		final File configDir = FabricLoader.getInstance().getConfigDirectory();
-		if (!configDir.exists()) {
-			LOG.warn("[Darkness] Could not access configuration directory: " + configDir.getAbsolutePath());
-		}
-
-		final File configFile = new File(configDir, "darkness.properties");
+		final File configFile = getConfigFile();
 		final Properties properties = new Properties();
-		if (configFile.exists()) {
-			try (FileInputStream stream = new FileInputStream(configFile)) {
-				properties.load(stream);
-			} catch (final IOException e) {
-				LOG.warn("[Darkness] Could not read property file '" + configFile.getAbsolutePath() + "'", e);
-			}
+
+		try (FileInputStream stream = new FileInputStream(configFile)) {
+			properties.load(stream);
+		} catch (final IOException e) {
+			LOG.warn("[Darkness] Could not read property file '" + configFile.getAbsolutePath() + "'", e);
 		}
 
+		blockLightOnly = properties.computeIfAbsent("only_affect_block_light", (a) -> "false").equals("false");
 		darkOverworld = properties.computeIfAbsent("dark_overworld", (a) -> "true").equals("true");
 		darkDefault = properties.computeIfAbsent("dark_default", (a) -> "true").equals("true");
 		darkNether = properties.computeIfAbsent("dark_nether", (a) -> "true").equals("true");
 		darkEnd = properties.computeIfAbsent("dark_end", (a) -> "true").equals("true");
 		darkSkyless = properties.computeIfAbsent("dark_skyless", (a) -> "true").equals("true");
 
-		double fog = darkNether ? 0.5 : 1.0;
-		if (darkNether) {
-			try {
-				fog = Double.parseDouble(properties.computeIfAbsent("dark_nether_fog", (a) -> "0.5").toString());
-				fog = MathHelper.clamp(fog, 0.0, 1.0);
-			} catch (final Exception e) {
-				fog = 0.5;
-				LOG.warn("Invalid configuration value for 'dark_nether_fog'. Using default value.");
-			}
+		try {
+			darkNetherFogConfigured = Double.parseDouble(properties.computeIfAbsent("dark_nether_fog", (a) -> "0.5").toString());
+			darkNetherFogConfigured = MathHelper.clamp(darkNetherFogConfigured, 0.0, 1.0);
+		} catch (final Exception e) {
+			darkNetherFogConfigured = 0.5;
+			LOG.warn("[Darkness] Invalid configuration value for 'dark_nether_fog'. Using default value.");
 		}
-		darkNetherFog = fog;
 
-		fog = darkNether ? 0.0 : 1.0;
-		if (darkNether) {
-			try {
-				fog = Double.parseDouble(properties.computeIfAbsent("dark_end_fog", (a) -> "0.0").toString());
-				fog = MathHelper.clamp(fog, 0.0, 1.0);
-			} catch (final Exception e) {
-				fog = 0.0;
-				LOG.warn("Invalid configuration value for 'dark_end_fog'. Using default value.");
-			}
+
+		try {
+			darkEndFogConfigured = Double.parseDouble(properties.computeIfAbsent("dark_end_fog", (a) -> "0.0").toString());
+			darkEndFogConfigured = MathHelper.clamp(darkEndFogConfigured, 0.0, 1.0);
+		} catch (final Exception e) {
+			darkEndFogConfigured = 0.0;
+			LOG.warn("[Darkness] Invalid configuration value for 'dark_end_fog'. Using default value.");
 		}
-		darkEndFog = fog;
+
+		computeConfigValues();
+
+		saveConfig();
+	}
+
+	private static void computeConfigValues()  {
+		darkNetherFogEffective = darkNether ? darkNetherFogConfigured : 1.0;
+		darkEndFogEffective = darkEnd ? darkEndFogConfigured : 1.0;
+	}
+
+	private static File getConfigFile() {
+		final File configDir = FabricLoader.getInstance().getConfigDirectory();
+		if (!configDir.exists()) {
+			LOG.warn("[Darkness] Could not access configuration directory: " + configDir.getAbsolutePath());
+		}
+
+		return  new File(configDir, "darkness.properties");
+	}
+
+	public static void saveConfig() {
+		final File configFile = getConfigFile();
+		final Properties properties = new Properties();
+
+		properties.put("only_affect_block_light", Boolean.toString(blockLightOnly));
+		properties.put("dark_overworld", Boolean.toString(darkOverworld));
+		properties.put("dark_default", Boolean.toString(darkDefault));
+		properties.put("dark_nether", Boolean.toString(darkNether));
+		properties.put("dark_nether_fog", Double.toString(darkNetherFogConfigured));
+		properties.put("dark_end", Boolean.toString(darkEnd));
+		properties.put("dark_end_fog", Double.toString(darkEndFogConfigured));
+		properties.put("dark_skyless", Boolean.toString(darkSkyless));
+
 
 		try (FileOutputStream stream = new FileOutputStream(configFile)) {
 			properties.store(stream, "Darkness properties file");
 		} catch (final IOException e) {
-			LOG.warn("[Indigo] Could not store property file '" + configFile.getAbsolutePath() + "'", e);
+			LOG.warn("[Darkness] Could not store property file '" + configFile.getAbsolutePath() + "'", e);
 		}
 	}
 
+	public static boolean blockLightOnly() {
+		return blockLightOnly;
+	}
+
 	public static double darkNetherFog() {
-		return darkNetherFog;
+		return darkNetherFogEffective;
 	}
 
 	public static double darkEndFog() {
-		return darkEndFog;
+		return darkEndFogEffective;
 	}
 
 	private static boolean isDark(World world) {
@@ -123,7 +151,7 @@ public class Darkness {
 	}
 
 	private static float skyFactor(World world) {
-		if (isDark(world)) {
+		if (!blockLightOnly && isDark(world)) {
 			if (world.getDimension().getType().hasSkyLight()) {
 				final float angle = world.getSkyAngle(0);
 				if (angle > 0.25f && angle < 0.75f) {
