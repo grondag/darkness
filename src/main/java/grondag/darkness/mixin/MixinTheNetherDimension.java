@@ -21,17 +21,17 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.class_5294.class_5296;
+import net.minecraft.client.render.SkyProperties;
 import net.minecraft.util.math.Vec3d;
 
 import grondag.darkness.Darkness;
 
-@Mixin(class_5296.class)
+@Mixin(SkyProperties.Nether.class)
 public class MixinTheNetherDimension {
 	private static double MIN = 0.029999999329447746D;
 
-	@Inject(method = "method_28112", at = @At(value = "RETURN"), cancellable = true)
-	private void onModifyFogColor(CallbackInfoReturnable<Vec3d> ci) {
+	@Inject(method = "adjustSkyColor", at = @At(value = "RETURN"), cancellable = true)
+	private void onAdjustSkyColor(CallbackInfoReturnable<Vec3d> ci) {
 		final double factor = Darkness.darkNetherFog();
 
 		if (factor != 1.0) {
