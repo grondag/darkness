@@ -80,8 +80,8 @@ public class Darkness {
 		}
 		darkNetherFog = fog;
 
-		fog = darkNether ? 0.0 : 1.0;
-		if (darkNether) {
+		fog = darkEnd ? 0.0 : 1.0;
+		if (darkEnd) {
 			try {
 				fog = Double.parseDouble(properties.computeIfAbsent("dark_end_fog", (a) -> "0.0").toString());
 				fog = MathHelper.clamp(fog, 0.0, 1.0);
@@ -163,7 +163,7 @@ public class Darkness {
 		final ClientWorld world = client.world;
 		if (world != null) {
 
-			if (client.player.hasStatusEffect(StatusEffects.NIGHT_VISION) || (client.player.hasStatusEffect(StatusEffects.CONDUIT_POWER) && client.player.method_3140() > 0) || world.getLightningTicksLeft() > 0) {
+			if (!isDark(world) || client.player.hasStatusEffect(StatusEffects.NIGHT_VISION) || (client.player.hasStatusEffect(StatusEffects.CONDUIT_POWER) && client.player.method_3140() > 0) || world.getLightningTicksLeft() > 0) {
 				enabled = false;
 				return;
 			} else {
