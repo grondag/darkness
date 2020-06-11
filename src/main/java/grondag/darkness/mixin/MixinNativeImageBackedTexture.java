@@ -43,8 +43,8 @@ public class MixinNativeImageBackedTexture implements TextureAccess {
 			final NativeImage img = image;
 			for (int b = 0; b < 16; b++) {
 				for (int s = 0; s < 16; s++) {
-					final int color = Darkness.darken(img.getPixelRgba(b, s), b, s);
-					img.setPixelRgba(b, s, color);
+					final int color = Darkness.darken(img.getPixelColor(b, s), b, s);
+					img.setPixelColor(b, s, color);
 				}
 			}
 		}

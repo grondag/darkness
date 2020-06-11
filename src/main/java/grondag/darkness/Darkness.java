@@ -29,6 +29,7 @@ import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 
@@ -140,12 +141,12 @@ public class Darkness {
 	}
 
 	private static boolean isDark(World world) {
-		final DimensionType dimType = world.getDimension();
-		if (dimType.isOverworld()) {
+		final RegistryKey<World> dimType = world.getRegistryKey();
+		if (dimType == World.OVERWORLD) {
 			return darkOverworld;
-		} else if (dimType.isNether()) {
+		} else if (dimType == World.NETHER) {
 			return darkNether;
-		} else if (dimType.isEnd()) {
+		} else if (dimType == World.END) {
 			return darkEnd;
 		} else if (world.getDimension().hasSkyLight()) {
 			return darkDefault;
@@ -251,7 +252,7 @@ public class Darkness {
 					green = green * (0.99F - min) + min;
 					blue = blue * (0.99F - min) + min;
 
-					if (world.getDimension().isEnd()) {
+					if (world.getRegistryKey() == World.END) {
 						red = skyFactor * 0.22F + blockBase * 0.75f;
 						green = skyFactor * 0.28F + blockGreen * 0.75f;
 						blue = skyFactor * 0.25F + blockBlue * 0.75f;
