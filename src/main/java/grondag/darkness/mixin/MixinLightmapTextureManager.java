@@ -37,7 +37,7 @@ public class MixinLightmapTextureManager implements LightmapAccess {
 	@Shadow
 	private float field_21528;
 	@Shadow
-	private boolean isDirty;
+	private boolean dirty;
 
 	@Inject(method = "<init>*", at = @At(value = "RETURN"))
 	private void afterInit(GameRenderer gameRenderer, MinecraftClient minecraftClient, CallbackInfo ci) {
@@ -51,6 +51,6 @@ public class MixinLightmapTextureManager implements LightmapAccess {
 
 	@Override
 	public boolean darkness_isDirty() {
-		return isDirty;
+		return dirty;
 	}
 }

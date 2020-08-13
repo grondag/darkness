@@ -158,7 +158,7 @@ public class Darkness {
 	private static float skyFactor(World world) {
 		if (!blockLightOnly && isDark(world)) {
 			if (world.getDimension().hasSkyLight()) {
-				final float angle = world.getSkyAngle(0);
+				final float angle = world.method_30274(0);
 				if (angle > 0.25f && angle < 0.75f) {
 					final float oldWeight = Math.max(0, (Math.abs(angle - 0.5f) - 0.2f)) * 20;
 					final float moon = ignoreMoonPhase ? 0 : world.getMoonSize();
