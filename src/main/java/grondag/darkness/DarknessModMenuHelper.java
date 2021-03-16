@@ -16,24 +16,19 @@
 
 package grondag.darkness;
 
-import java.util.function.Function;
-
-import io.github.prospector.modmenu.api.ModMenuApi;
-
-import net.minecraft.client.gui.screen.Screen;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
+// FIX: restore when ModMenu available again
 @Environment(EnvType.CLIENT)
-public class DarknessModMenuHelper implements ModMenuApi {
-	@Override
-	public Function<Screen, ? extends Screen> getConfigScreenFactory() {
-		return DarknessConfigScreen::new;
-	}
-
-	@Override
-	public String getModId() {
-		return "darkness";
-	}
+public class DarknessModMenuHelper { //implements ModMenuApi {
+//	@Override
+//	public Function<Screen, ? extends Screen> getConfigScreenFactory() {
+//		return DarknessConfigScreen::new;
+//	}
+//
+//	@Override
+//	public String getModId() {
+//		return "darkness";
+//	}
 }

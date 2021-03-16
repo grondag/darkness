@@ -216,7 +216,7 @@ public class Darkness {
 				float min = skyFactor * 0.05f;
 				final float rawAmbient = ambient * skyFactor;
 				final float minAmbient = rawAmbient * (1 - min) + min;
-				final float skyBase = dim.method_28516(skyIndex) * minAmbient;
+				final float skyBase = dim.getBrightness(skyIndex) * minAmbient;
 
 				min = 0.35f * skyFactor;
 				float skyRed = skyBase * (rawAmbient * (1 - min) + min);
@@ -237,7 +237,7 @@ public class Darkness {
 						blockFactor = 1 - blockFactor * blockFactor * blockFactor * blockFactor;
 					}
 
-					final float blockBase = blockFactor * dim.method_28516(blockIndex) * (prevFlicker * 0.1F + 1.5F);
+					final float blockBase = blockFactor * dim.getBrightness(blockIndex) * (prevFlicker * 0.1F + 1.5F);
 					min = 0.4f * blockFactor;
 					final float blockGreen = blockBase * ((blockBase * (1 - min) + min) * (1 - min) + min);
 					final float blockBlue = blockBase * (blockBase * blockBase * (1 - min) + min);
