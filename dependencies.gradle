@@ -1,7 +1,7 @@
 repositories {
 	mavenLocal()
     jcenter();
-    maven { 
+    maven {
     	name = "Fabric"
     	url "https://maven.fabricmc.net/"
 	}
@@ -13,6 +13,8 @@ repositories {
 		name = "CurseForge"
 		url = "https://minecraft.curseforge.com/api/maven"
 	}
+
+	maven { url "https://maven.terraformersmc.com/releases/"}
 }
 
 dependencies {
@@ -20,10 +22,10 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}"
 	modApi "net.fabricmc:fabric-loader:${project.loader_version}"
 	modApi "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-	
+
 	// dev env annotation support
 	compileOnly "org.apiguardian:apiguardian-api:1.0.0"
 	compileOnly "com.google.code.findbugs:jsr305:3.0.2"
-	
-	modApi ("io.github.prospector:modmenu:${project.modmenu_version}") { transitive = false }
+
+	modApi("com.terraformersmc:modmenu:${project.modmenu_version}") { transitive = false }
 }
