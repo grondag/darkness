@@ -128,15 +128,16 @@ public class DarknessConfigScreen extends Screen {
 
 		i +=  27;
 
-		method_37063(blockLightOnlyWidget);
-		method_37063(ignoreMoonPhaseWidget);
-		method_37063(darkOverworldWidget);
-		method_37063(darkNetherWidget);
-		method_37063(darkEndWidget);
-		method_37063(darkDefaultWidget);
-		method_37063(darkSkylessWidget);
 
-		method_37063(new ButtonWidget(width / 2 - 100, height - 27, 200, 20, ScreenTexts.DONE, (buttonWidget) -> {
+		addDrawableChild(blockLightOnlyWidget);
+		addDrawableChild(ignoreMoonPhaseWidget);
+		addDrawableChild(darkOverworldWidget);
+		addDrawableChild(darkNetherWidget);
+		addDrawableChild(darkEndWidget);
+		addDrawableChild(darkDefaultWidget);
+		addDrawableChild(darkSkylessWidget);
+
+		addDrawableChild(new ButtonWidget(width / 2 - 100, height - 27, 200, 20, ScreenTexts.DONE, (buttonWidget) -> {
 			Darkness.blockLightOnly = blockLightOnlyWidget.isChecked();
 			Darkness.ignoreMoonPhase = ignoreMoonPhaseWidget.isChecked();
 			Darkness.darkOverworld = darkOverworldWidget.isChecked();
