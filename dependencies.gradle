@@ -13,6 +13,8 @@ repositories {
 		name = "CurseForge"
 		url = "https://minecraft.curseforge.com/api/maven"
 	}
+	
+	maven { url "https://maven.terraformersmc.com/releases/"}
 }
 
 dependencies {
