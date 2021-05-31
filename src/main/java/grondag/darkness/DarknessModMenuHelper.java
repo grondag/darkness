@@ -16,19 +16,16 @@
 
 package grondag.darkness;
 
+import com.terraformersmc.modmenu.api.ConfigScreenFactory;
+import com.terraformersmc.modmenu.api.ModMenuApi;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
-// FIX: restore when ModMenu available again
 @Environment(EnvType.CLIENT)
-public class DarknessModMenuHelper { //implements ModMenuApi {
-//	@Override
-//	public Function<Screen, ? extends Screen> getConfigScreenFactory() {
-//		return DarknessConfigScreen::new;
-//	}
-//
-//	@Override
-//	public String getModId() {
-//		return "darkness";
-//	}
+public class DarknessModMenuHelper implements ModMenuApi {
+	@Override
+	public ConfigScreenFactory<?> getModConfigScreenFactory() {
+		return DarknessConfigScreen::new;
+	}
 }
