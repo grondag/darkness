@@ -31,7 +31,7 @@ public class DarknessConfigScreen extends Screen {
 
 	@Override
 	public void onClose() {
-		client.openScreen(parent);
+		client.setScreen(parent);
 	}
 
 	@Override
@@ -146,7 +146,7 @@ public class DarknessConfigScreen extends Screen {
 			Darkness.darkDefault = darkDefaultWidget.isChecked();
 			Darkness.darkSkyless = darkSkylessWidget.isChecked();
 			Darkness.saveConfig();
-			client.openScreen(parent);
+			client.setScreen(parent);
 		}));
 	}
 
