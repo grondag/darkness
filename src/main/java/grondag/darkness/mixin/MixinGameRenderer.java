@@ -21,24 +21,22 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.client.util.math.MatrixStack;
-
+import com.mojang.blaze3d.vertex.PoseStack;
 import grondag.darkness.Darkness;
 import grondag.darkness.LightmapAccess;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.LightTexture;
 
 @Mixin(GameRenderer.class)
 public class MixinGameRenderer {
 	@Shadow
-	private MinecraftClient client;
+	private Minecraft client;
 	@Shadow
-	private LightmapTextureManager lightmapTextureManager;
+	private LightTexture lightmapTextureManager;
 
 	@Inject(method = "renderWorld", at = @At(value = "HEAD"))
-	private void onRenderWorld(float tickDelta, long nanos, MatrixStack matrixStack, CallbackInfo ci) {
+	private void onRenderWorld(float tickDelta, long nanos, PoseStack matrixStack, CallbackInfo ci) {
 		final LightmapAccess lightmap = (LightmapAccess) lightmapTextureManager;
 
 		if (lightmap.darkness_isDirty()) {

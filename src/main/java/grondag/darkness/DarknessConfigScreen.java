@@ -1,26 +1,26 @@
 package grondag.darkness;
 
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ScreenTexts;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.CheckboxWidget;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.TranslatableText;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Checkbox;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.TranslatableComponent;
 
 public class DarknessConfigScreen extends Screen {
 	protected final Screen parent;
 
-	protected CheckboxWidget blockLightOnlyWidget;
-	protected CheckboxWidget ignoreMoonPhaseWidget;
-	protected CheckboxWidget darkOverworldWidget;
-	protected CheckboxWidget darkNetherWidget;
-	protected CheckboxWidget darkEndWidget;
-	protected CheckboxWidget darkDefaultWidget;
-	protected CheckboxWidget darkSkylessWidget;
+	protected Checkbox blockLightOnlyWidget;
+	protected Checkbox ignoreMoonPhaseWidget;
+	protected Checkbox darkOverworldWidget;
+	protected Checkbox darkNetherWidget;
+	protected Checkbox darkEndWidget;
+	protected Checkbox darkDefaultWidget;
+	protected Checkbox darkSkylessWidget;
 
 
 	public DarknessConfigScreen(Screen parent) {
-		super(new TranslatableText("config.darkness.title"));
+		super(new TranslatableComponent("config.darkness.title"));
 		this.parent = parent;
 	}
 
@@ -31,97 +31,97 @@ public class DarknessConfigScreen extends Screen {
 
 	@Override
 	public void onClose() {
-		client.setScreen(parent);
+		minecraft.setScreen(parent);
 	}
 
 	@Override
 	protected void init() {
 		int i = 27;
-		blockLightOnlyWidget = new CheckboxWidget(width / 2 - 100, i, 200, 20, new TranslatableText("config.darkness.label.block_light_only"), Darkness.blockLightOnly) {
+		blockLightOnlyWidget = new Checkbox(width / 2 - 100, i, 200, 20, new TranslatableComponent("config.darkness.label.block_light_only"), Darkness.blockLightOnly) {
 			@Override
-			public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+			public void renderButton(PoseStack matrices, int mouseX, int mouseY, float delta) {
 				super.renderButton(matrices, mouseX, mouseY, delta);
 
-				if (hovered) {
-					DarknessConfigScreen.this.renderTooltip(matrices,  new TranslatableText("config.darkness.help.block_light_only"), mouseX, mouseY);
+				if (isHovered) {
+					DarknessConfigScreen.this.renderTooltip(matrices,  new TranslatableComponent("config.darkness.help.block_light_only"), mouseX, mouseY);
 				}
 			}
 		};
 
 		i +=  27;
 
-		ignoreMoonPhaseWidget = new CheckboxWidget(width / 2 - 100, i, 200, 20, new TranslatableText("config.darkness.label.ignore_moon_phase"), Darkness.ignoreMoonPhase) {
+		ignoreMoonPhaseWidget = new Checkbox(width / 2 - 100, i, 200, 20, new TranslatableComponent("config.darkness.label.ignore_moon_phase"), Darkness.ignoreMoonPhase) {
 			@Override
-			public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+			public void renderButton(PoseStack matrices, int mouseX, int mouseY, float delta) {
 				super.renderButton(matrices, mouseX, mouseY, delta);
 
-				if (hovered) {
-					DarknessConfigScreen.this.renderTooltip(matrices,  new TranslatableText("config.darkness.help.ignore_moon_phase"), mouseX, mouseY);
+				if (isHovered) {
+					DarknessConfigScreen.this.renderTooltip(matrices,  new TranslatableComponent("config.darkness.help.ignore_moon_phase"), mouseX, mouseY);
 				}
 			}
 		};
 
 		i +=  27;
 
-		darkOverworldWidget = new CheckboxWidget(width / 2 - 100, i, 200, 20, new TranslatableText("config.darkness.label.dark_overworld"), Darkness.darkOverworld) {
+		darkOverworldWidget = new Checkbox(width / 2 - 100, i, 200, 20, new TranslatableComponent("config.darkness.label.dark_overworld"), Darkness.darkOverworld) {
 			@Override
-			public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+			public void renderButton(PoseStack matrices, int mouseX, int mouseY, float delta) {
 				super.renderButton(matrices, mouseX, mouseY, delta);
 
-				if (hovered) {
-					DarknessConfigScreen.this.renderTooltip(matrices,  new TranslatableText("config.darkness.help.dark_overworld"), mouseX, mouseY);
+				if (isHovered) {
+					DarknessConfigScreen.this.renderTooltip(matrices,  new TranslatableComponent("config.darkness.help.dark_overworld"), mouseX, mouseY);
 				}
 			}
 		};
 
 		i +=  27;
 
-		darkNetherWidget = new CheckboxWidget(width / 2 - 100, i, 200, 20, new TranslatableText("config.darkness.label.dark_nether"), Darkness.darkNether) {
+		darkNetherWidget = new Checkbox(width / 2 - 100, i, 200, 20, new TranslatableComponent("config.darkness.label.dark_nether"), Darkness.darkNether) {
 			@Override
-			public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+			public void renderButton(PoseStack matrices, int mouseX, int mouseY, float delta) {
 				super.renderButton(matrices, mouseX, mouseY, delta);
 
-				if (hovered) {
-					DarknessConfigScreen.this.renderTooltip(matrices,  new TranslatableText("config.darkness.help.dark_nether"), mouseX, mouseY);
+				if (isHovered) {
+					DarknessConfigScreen.this.renderTooltip(matrices,  new TranslatableComponent("config.darkness.help.dark_nether"), mouseX, mouseY);
 				}
 			}
 		};
 
 		i +=  27;
 
-		darkEndWidget = new CheckboxWidget(width / 2 - 100, i, 200, 20, new TranslatableText("config.darkness.label.dark_end"), Darkness.darkEnd) {
+		darkEndWidget = new Checkbox(width / 2 - 100, i, 200, 20, new TranslatableComponent("config.darkness.label.dark_end"), Darkness.darkEnd) {
 			@Override
-			public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+			public void renderButton(PoseStack matrices, int mouseX, int mouseY, float delta) {
 				super.renderButton(matrices, mouseX, mouseY, delta);
 
-				if (hovered) {
-					DarknessConfigScreen.this.renderTooltip(matrices,  new TranslatableText("config.darkness.help.dark_end"), mouseX, mouseY);
+				if (isHovered) {
+					DarknessConfigScreen.this.renderTooltip(matrices,  new TranslatableComponent("config.darkness.help.dark_end"), mouseX, mouseY);
 				}
 			}
 		};
 
 		i +=  27;
 
-		darkDefaultWidget = new CheckboxWidget(width / 2 - 100, i, 200, 20, new TranslatableText("config.darkness.label.dark_default"), Darkness.darkDefault) {
+		darkDefaultWidget = new Checkbox(width / 2 - 100, i, 200, 20, new TranslatableComponent("config.darkness.label.dark_default"), Darkness.darkDefault) {
 			@Override
-			public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+			public void renderButton(PoseStack matrices, int mouseX, int mouseY, float delta) {
 				super.renderButton(matrices, mouseX, mouseY, delta);
 
-				if (hovered) {
-					DarknessConfigScreen.this.renderTooltip(matrices,  new TranslatableText("config.darkness.help.dark_default"), mouseX, mouseY);
+				if (isHovered) {
+					DarknessConfigScreen.this.renderTooltip(matrices,  new TranslatableComponent("config.darkness.help.dark_default"), mouseX, mouseY);
 				}
 			}
 		};
 
 		i +=  27;
 
-		darkSkylessWidget = new CheckboxWidget(width / 2 - 100, i, 200, 20, new TranslatableText("config.darkness.label.dark_skyless"), Darkness.darkSkyless) {
+		darkSkylessWidget = new Checkbox(width / 2 - 100, i, 200, 20, new TranslatableComponent("config.darkness.label.dark_skyless"), Darkness.darkSkyless) {
 			@Override
-			public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+			public void renderButton(PoseStack matrices, int mouseX, int mouseY, float delta) {
 				super.renderButton(matrices, mouseX, mouseY, delta);
 
-				if (hovered) {
-					DarknessConfigScreen.this.renderTooltip(matrices,  new TranslatableText("config.darkness.help.dark_skyless"), mouseX, mouseY);
+				if (isHovered) {
+					DarknessConfigScreen.this.renderTooltip(matrices,  new TranslatableComponent("config.darkness.help.dark_skyless"), mouseX, mouseY);
 				}
 			}
 		};
@@ -129,31 +129,31 @@ public class DarknessConfigScreen extends Screen {
 		i +=  27;
 
 
-		addDrawableChild(blockLightOnlyWidget);
-		addDrawableChild(ignoreMoonPhaseWidget);
-		addDrawableChild(darkOverworldWidget);
-		addDrawableChild(darkNetherWidget);
-		addDrawableChild(darkEndWidget);
-		addDrawableChild(darkDefaultWidget);
-		addDrawableChild(darkSkylessWidget);
+		addRenderableWidget(blockLightOnlyWidget);
+		addRenderableWidget(ignoreMoonPhaseWidget);
+		addRenderableWidget(darkOverworldWidget);
+		addRenderableWidget(darkNetherWidget);
+		addRenderableWidget(darkEndWidget);
+		addRenderableWidget(darkDefaultWidget);
+		addRenderableWidget(darkSkylessWidget);
 
-		addDrawableChild(new ButtonWidget(width / 2 - 100, height - 27, 200, 20, ScreenTexts.DONE, (buttonWidget) -> {
-			Darkness.blockLightOnly = blockLightOnlyWidget.isChecked();
-			Darkness.ignoreMoonPhase = ignoreMoonPhaseWidget.isChecked();
-			Darkness.darkOverworld = darkOverworldWidget.isChecked();
-			Darkness.darkNether = darkNetherWidget.isChecked();
-			Darkness.darkEnd = darkEndWidget.isChecked();
-			Darkness.darkDefault = darkDefaultWidget.isChecked();
-			Darkness.darkSkyless = darkSkylessWidget.isChecked();
+		addRenderableWidget(new Button(width / 2 - 100, height - 27, 200, 20, CommonComponents.GUI_DONE, (buttonWidget) -> {
+			Darkness.blockLightOnly = blockLightOnlyWidget.selected();
+			Darkness.ignoreMoonPhase = ignoreMoonPhaseWidget.selected();
+			Darkness.darkOverworld = darkOverworldWidget.selected();
+			Darkness.darkNether = darkNetherWidget.selected();
+			Darkness.darkEnd = darkEndWidget.selected();
+			Darkness.darkDefault = darkDefaultWidget.selected();
+			Darkness.darkSkyless = darkSkylessWidget.selected();
 			Darkness.saveConfig();
-			client.setScreen(parent);
+			minecraft.setScreen(parent);
 		}));
 	}
 
 	@Override
-	public void render(MatrixStack matrixStack, int i, int j, float f) {
+	public void render(PoseStack matrixStack, int i, int j, float f) {
 		renderBackground(matrixStack, 0);
-		drawCenteredText(matrixStack, textRenderer, title, width / 2, 5, 16777215);
+		drawCenteredString(matrixStack, font, title, width / 2, 5, 16777215);
 
 		super.render(matrixStack, i, j, f);
 	}

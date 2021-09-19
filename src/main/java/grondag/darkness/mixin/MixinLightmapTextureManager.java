@@ -20,27 +20,25 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.client.texture.NativeImageBackedTexture;
-
 import grondag.darkness.LightmapAccess;
 import grondag.darkness.TextureAccess;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.texture.DynamicTexture;
 
-@Mixin(LightmapTextureManager.class)
+@Mixin(LightTexture.class)
 public class MixinLightmapTextureManager implements LightmapAccess {
 
 	@Shadow
-	private NativeImageBackedTexture texture;
+	private DynamicTexture texture;
 	@Shadow
 	private float field_21528;
 	@Shadow
 	private boolean dirty;
 
 	@Inject(method = "<init>*", at = @At(value = "RETURN"))
-	private void afterInit(GameRenderer gameRenderer, MinecraftClient minecraftClient, CallbackInfo ci) {
+	private void afterInit(GameRenderer gameRenderer, Minecraft minecraftClient, CallbackInfo ci) {
 		((TextureAccess) texture).darkness_enableUploadHook();
 	}
 

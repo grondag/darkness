@@ -23,17 +23,15 @@ import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
-
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.Mth;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.dimension.DimensionType;
 
 public class Darkness {
 	public static Logger LOG = LogManager.getLogger("Darkness");
@@ -72,7 +70,7 @@ public class Darkness {
 
 		try {
 			darkNetherFogConfigured = Double.parseDouble(properties.computeIfAbsent("dark_nether_fog", (a) -> "0.5").toString());
-			darkNetherFogConfigured = MathHelper.clamp(darkNetherFogConfigured, 0.0, 1.0);
+			darkNetherFogConfigured = Mth.clamp(darkNetherFogConfigured, 0.0, 1.0);
 		} catch (final Exception e) {
 			darkNetherFogConfigured = 0.5;
 			LOG.warn("[Darkness] Invalid configuration value for 'dark_nether_fog'. Using default value.");
@@ -81,7 +79,7 @@ public class Darkness {
 
 		try {
 			darkEndFogConfigured = Double.parseDouble(properties.computeIfAbsent("dark_end_fog", (a) -> "0.0").toString());
-			darkEndFogConfigured = MathHelper.clamp(darkEndFogConfigured, 0.0, 1.0);
+			darkEndFogConfigured = Mth.clamp(darkEndFogConfigured, 0.0, 1.0);
 		} catch (final Exception e) {
 			darkEndFogConfigured = 0.0;
 			LOG.warn("[Darkness] Invalid configuration value for 'dark_end_fog'. Using default value.");
@@ -140,29 +138,29 @@ public class Darkness {
 		return darkEndFogEffective;
 	}
 
-	private static boolean isDark(World world) {
-		final RegistryKey<World> dimType = world.getRegistryKey();
-		if (dimType == World.OVERWORLD) {
+	private static boolean isDark(Level world) {
+		final ResourceKey<Level> dimType = world.dimension();
+		if (dimType == Level.OVERWORLD) {
 			return darkOverworld;
-		} else if (dimType == World.NETHER) {
+		} else if (dimType == Level.NETHER) {
 			return darkNether;
-		} else if (dimType == World.END) {
+		} else if (dimType == Level.END) {
 			return darkEnd;
-		} else if (world.getDimension().hasSkyLight()) {
+		} else if (world.dimensionType().hasSkyLight()) {
 			return darkDefault;
 		} else {
 			return darkSkyless;
 		}
 	}
 
-	private static float skyFactor(World world) {
+	private static float skyFactor(Level world) {
 		if (!blockLightOnly && isDark(world)) {
-			if (world.getDimension().hasSkyLight()) {
-				final float angle = world.getSkyAngle(0);
+			if (world.dimensionType().hasSkyLight()) {
+				final float angle = world.getTimeOfDay(0);
 				if (angle > 0.25f && angle < 0.75f) {
 					final float oldWeight = Math.max(0, (Math.abs(angle - 0.5f) - 0.2f)) * 20;
-					final float moon = ignoreMoonPhase ? 0 : world.getMoonSize();
-					return MathHelper.lerp(oldWeight * oldWeight * oldWeight, moon * moon, 1f);
+					final float moon = ignoreMoonPhase ? 0 : world.getMoonBrightness();
+					return Mth.lerp(oldWeight * oldWeight * oldWeight, moon * moon, 1f);
 				} else {
 					return 1;
 				}
@@ -192,11 +190,11 @@ public class Darkness {
 		return r * 0.2126f + g * 0.7152f + b * 0.0722f;
 	}
 
-	public static void updateLuminance(float tickDelta, MinecraftClient client, GameRenderer worldRenderer, float prevFlicker) {
-		final ClientWorld world = client.world;
+	public static void updateLuminance(float tickDelta, Minecraft client, GameRenderer worldRenderer, float prevFlicker) {
+		final ClientLevel world = client.level;
 		if (world != null) {
 
-			if (!isDark(world) || client.player.hasStatusEffect(StatusEffects.NIGHT_VISION) || (client.player.hasStatusEffect(StatusEffects.CONDUIT_POWER) && client.player.getUnderwaterVisibility() > 0) || world.getLightningTicksLeft() > 0) {
+			if (!isDark(world) || client.player.hasEffect(MobEffects.NIGHT_VISION) || (client.player.hasEffect(MobEffects.CONDUIT_POWER) && client.player.getWaterVision() > 0) || world.getSkyFlashTime() > 0) {
 				enabled = false;
 				return;
 			} else {
@@ -204,8 +202,8 @@ public class Darkness {
 			}
 
 			final float dimSkyFactor = Darkness.skyFactor(world);
-			final float ambient = world.method_23783(1.0F);
-			final DimensionType dim = world.getDimension();
+			final float ambient = world.getSkyDarken(1.0F);
+			final DimensionType dim = world.dimensionType();
 			final boolean blockAmbient = !Darkness.isDark(world);
 
 			for (int skyIndex = 0; skyIndex < 16; ++skyIndex) {
@@ -216,15 +214,15 @@ public class Darkness {
 				float min = skyFactor * 0.05f;
 				final float rawAmbient = ambient * skyFactor;
 				final float minAmbient = rawAmbient * (1 - min) + min;
-				final float skyBase = dim.getBrightness(skyIndex) * minAmbient;
+				final float skyBase = dim.brightness(skyIndex) * minAmbient;
 
 				min = 0.35f * skyFactor;
 				float skyRed = skyBase * (rawAmbient * (1 - min) + min);
 				float skyGreen = skyBase * (rawAmbient * (1 - min) + min);
 				float skyBlue = skyBase;
 
-				if (worldRenderer.getSkyDarkness(tickDelta) > 0.0F) {
-					final float skyDarkness = worldRenderer.getSkyDarkness(tickDelta);
+				if (worldRenderer.getDarkenWorldAmount(tickDelta) > 0.0F) {
+					final float skyDarkness = worldRenderer.getDarkenWorldAmount(tickDelta);
 					skyRed = skyRed * (1.0F - skyDarkness) + skyRed * 0.7F * skyDarkness;
 					skyGreen = skyGreen * (1.0F - skyDarkness) + skyGreen * 0.6F * skyDarkness;
 					skyBlue = skyBlue * (1.0F - skyDarkness) + skyBlue * 0.6F * skyDarkness;
@@ -237,7 +235,7 @@ public class Darkness {
 						blockFactor = 1 - blockFactor * blockFactor * blockFactor * blockFactor;
 					}
 
-					final float blockBase = blockFactor * dim.getBrightness(blockIndex) * (prevFlicker * 0.1F + 1.5F);
+					final float blockBase = blockFactor * dim.brightness(blockIndex) * (prevFlicker * 0.1F + 1.5F);
 					min = 0.4f * blockFactor;
 					final float blockGreen = blockBase * ((blockBase * (1 - min) + min) * (1 - min) + min);
 					final float blockBlue = blockBase * (blockBase * blockBase * (1 - min) + min);
@@ -252,7 +250,7 @@ public class Darkness {
 					green = green * (0.99F - min) + min;
 					blue = blue * (0.99F - min) + min;
 
-					if (world.getRegistryKey() == World.END) {
+					if (world.dimension() == Level.END) {
 						red = skyFactor * 0.22F + blockBase * 0.75f;
 						green = skyFactor * 0.28F + blockGreen * 0.75f;
 						blue = skyFactor * 0.25F + blockBlue * 0.75f;

@@ -18,19 +18,17 @@ package grondag.darkness.mixin;
 
 import static grondag.darkness.Darkness.enabled;
 
+import com.mojang.blaze3d.platform.NativeImage;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import net.minecraft.client.texture.NativeImage;
-import net.minecraft.client.texture.NativeImageBackedTexture;
-
 import grondag.darkness.Darkness;
 import grondag.darkness.TextureAccess;
+import net.minecraft.client.renderer.texture.DynamicTexture;
 
-@Mixin(NativeImageBackedTexture.class)
+@Mixin(DynamicTexture.class)
 public class MixinNativeImageBackedTexture implements TextureAccess {
 	@Shadow
 	NativeImage image;
@@ -43,8 +41,8 @@ public class MixinNativeImageBackedTexture implements TextureAccess {
 			final NativeImage img = image;
 			for (int b = 0; b < 16; b++) {
 				for (int s = 0; s < 16; s++) {
-					final int color = Darkness.darken(img.getPixelColor(b, s), b, s);
-					img.setPixelColor(b, s, color);
+					final int color = Darkness.darken(img.getPixelRGBA(b, s), b, s);
+					img.setPixelRGBA(b, s, color);
 				}
 			}
 		}
