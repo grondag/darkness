@@ -20,35 +20,36 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import grondag.darkness.LightmapAccess;
-import grondag.darkness.TextureAccess;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 
-@Mixin(LightTexture.class)
-public class MixinLightmapTextureManager implements LightmapAccess {
+import grondag.darkness.LightmapAccess;
+import grondag.darkness.TextureAccess;
 
+@Mixin(LightTexture.class)
+public class MixinLightTexture implements LightmapAccess {
 	@Shadow
-	private DynamicTexture texture;
+	private DynamicTexture lightTexture;
 	@Shadow
-	private float field_21528;
+	private float blockLightRedFlicker;
 	@Shadow
-	private boolean dirty;
+	private boolean updateLightTexture;
 
 	@Inject(method = "<init>*", at = @At(value = "RETURN"))
 	private void afterInit(GameRenderer gameRenderer, Minecraft minecraftClient, CallbackInfo ci) {
-		((TextureAccess) texture).darkness_enableUploadHook();
+		((TextureAccess) lightTexture).darkness_enableUploadHook();
 	}
 
 	@Override
 	public float darkness_prevFlicker() {
-		return field_21528;
+		return blockLightRedFlicker;
 	}
 
 	@Override
 	public boolean darkness_isDirty() {
-		return dirty;
+		return updateLightTexture;
 	}
 }

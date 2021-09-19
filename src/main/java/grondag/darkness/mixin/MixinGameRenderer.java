@@ -16,33 +16,35 @@
 
 package grondag.darkness.mixin;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import com.mojang.blaze3d.vertex.PoseStack;
-import grondag.darkness.Darkness;
-import grondag.darkness.LightmapAccess;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
 
+import grondag.darkness.Darkness;
+import grondag.darkness.LightmapAccess;
+
 @Mixin(GameRenderer.class)
 public class MixinGameRenderer {
 	@Shadow
-	private Minecraft client;
+	private Minecraft minecraft;
 	@Shadow
-	private LightTexture lightmapTextureManager;
+	private LightTexture lightTexture;
 
-	@Inject(method = "renderWorld", at = @At(value = "HEAD"))
-	private void onRenderWorld(float tickDelta, long nanos, PoseStack matrixStack, CallbackInfo ci) {
-		final LightmapAccess lightmap = (LightmapAccess) lightmapTextureManager;
+	@Inject(method = "renderLevel", at = @At(value = "HEAD"))
+	private void onRenderLevel(float tickDelta, long nanos, PoseStack matrixStack, CallbackInfo ci) {
+		final LightmapAccess lightmap = (LightmapAccess) lightTexture;
 
 		if (lightmap.darkness_isDirty()) {
-			client.getProfiler().push("lightTex");
-			Darkness.updateLuminance(tickDelta, client, (GameRenderer) (Object) this, lightmap.darkness_prevFlicker());
-			client.getProfiler().pop();
+			minecraft.getProfiler().push("lightTex");
+			Darkness.updateLuminance(tickDelta, minecraft, (GameRenderer) (Object) this, lightmap.darkness_prevFlicker());
+			minecraft.getProfiler().pop();
 		}
 	}
 }

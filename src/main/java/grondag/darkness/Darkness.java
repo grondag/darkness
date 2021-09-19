@@ -23,7 +23,7 @@ import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import net.fabricmc.loader.api.FabricLoader;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.GameRenderer;
@@ -32,6 +32,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.DimensionType;
+
+import net.fabricmc.loader.api.FabricLoader;
 
 public class Darkness {
 	public static Logger LOG = LogManager.getLogger("Darkness");
@@ -96,7 +98,8 @@ public class Darkness {
 	}
 
 	private static File getConfigFile() {
-		final File configDir = FabricLoader.getInstance().getConfigDirectory();
+		final File configDir = FabricLoader.getInstance().getConfigDir().toFile();
+
 		if (!configDir.exists()) {
 			LOG.warn("[Darkness] Could not access configuration directory: " + configDir.getAbsolutePath());
 		}

@@ -24,21 +24,24 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import grondag.darkness.Darkness;
-import grondag.darkness.TextureAccess;
+
 import net.minecraft.client.renderer.texture.DynamicTexture;
 
+import grondag.darkness.Darkness;
+import grondag.darkness.TextureAccess;
+
 @Mixin(DynamicTexture.class)
-public class MixinNativeImageBackedTexture implements TextureAccess {
+public class MixinDynamicTexture implements TextureAccess {
 	@Shadow
-	NativeImage image;
+	NativeImage pixels;
 
 	private boolean enableHook = false;
 
 	@Inject(method = "upload", at = @At(value = "HEAD"))
-	private void onRenderWorld(CallbackInfo ci) {
-		if (enableHook && enabled) {
-			final NativeImage img = image;
+	private void onUpload(CallbackInfo ci) {
+		if (enableHook && enabled && pixels != null) {
+			final NativeImage img = pixels;
+
 			for (int b = 0; b < 16; b++) {
 				for (int s = 0; s < 16; s++) {
 					final int color = Darkness.darken(img.getPixelRGBA(b, s), b, s);

@@ -5,11 +5,11 @@
   "compatibilityLevel": "JAVA_16",
   "mixins": [
     "MixinGameRenderer",
-	"MixinLightmapTextureManager",
-	"MixinNativeImageBackedTexture",
-    "MixinTheEndDimension",
-	"MixinTheNetherDimension"
-      ],
+	"MixinLightTexture",
+	"MixinDynamicTexture",
+    "MixinEndEffects",
+	"MixinNetherEffects"
+  ],
   "injectors": {
     "defaultRequire": 1
   }
