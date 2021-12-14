@@ -1,4 +1,4 @@
-// VRAM STANDARD GRADLE BUILD FOR FABRIC 1.17
+// VRAM STANDARD GRADLE BUILD FOR FABRIC 1.18
 // DO NOT MAKE CHANGES HERE - THEY WILL BE OVERWRITTEN BY AUTOMATED UPDATE
 
 buildscript {
@@ -19,7 +19,7 @@ plugins {
 
 ext.platform_name = 'fabric'
 ext.loader_version = '0.12.11'
-ext.fabric_version = '0.44.0+1.17'
+ext.fabric_version = '0.44.0+1.18'
 
 apply from: '../project_common.gradle'
 apply from: 'project.gradle'
@@ -86,7 +86,7 @@ task github(dependsOn: build) {
 import com.modrinth.minotaur.TaskModrinthUpload
 
 task publishModrinth (type: TaskModrinthUpload){ // Make sure it runs after build!
-  if (project.hasProperty("modrinth_token") && project.hasProperty("modrinth_id")) {
+	if (project.hasProperty("modrinth_token") && project.hasProperty("modrinth_id")) {
 		token = project.modrinth_token
 		projectId = project.modrinth_id
 		versionName = project.platform_name + '-' + project.mc_tag + '-' + project.version

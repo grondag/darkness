@@ -1,4 +1,4 @@
-// VRAM STANDARD GRADLE BUILD FOR FORGE 1.17
+// VRAM STANDARD GRADLE BUILD FOR FORGE 1.18
 // DO NOT MAKE CHANGES HERE - THEY WILL BE OVERWRITTEN BY AUTOMATED UPDATE
 
 buildscript {
@@ -18,7 +18,7 @@ plugins {
 }
 
 ext.platform_name = 'forge'
-ext.forge_version = '37.1.1'
+ext.forge_version = '39.0.0'
 
 apply from: '../project_common.gradle'
 apply from: 'project.gradle'

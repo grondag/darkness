@@ -1,11 +1,11 @@
-ext.mc_tag = 'mc117'
-ext.minecraft_version = '1.17.1'
-ext.release_version = '1.17.1'
+ext.mc_tag = 'mc118'
+ext.minecraft_version = '1.18.1'
+ext.release_version = '1.18.1'
 
 project.archivesBaseName = project.mod_name + "-" + project.platform_name + "-" + project.mc_tag
 
-sourceCompatibility = JavaVersion.VERSION_16
-targetCompatibility = JavaVersion.VERSION_16
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
 
 repositories {
 	mavenLocal()

@@ -20,9 +20,9 @@
 
 package grondag.darkness;
 
+import net.minecraftforge.client.ConfigGuiHandler;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fmlclient.ConfigGuiHandler;
 
 @Mod("darkness")
 public class DarknessMod {
