@@ -1,0 +1,16 @@
+
+project.group = 'io.grondag'
+ext.author = 'Grondag'
+ext.title = 'True Darkness'
+ext.mod_name = 'darkness'
+ext.mod_version = '2.0'
+
+ext.github_repository_owner = 'grondag'
+ext.github_repository = 'darkness'
+
+ext.curseforge_id = '337243'
+ext.modrinth_id = 'Ja7zPEaN'
+ext.release_type = 'release'
+
+ext.build_fat_jar = false
+ext.build_forge = true

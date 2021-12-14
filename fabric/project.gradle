@@ -1,0 +1,26 @@
+dependencies {
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+	modCompileOnly "com.terraformersmc:modmenu:2.0.14"
+	modRuntime "com.terraformersmc:modmenu:2.0.14"
+}
+
+sourceSets {
+	main {
+		java {
+			srcDirs = ['../common/src/main/java', 'src/main/java']
+			include '**/*'
+			exclude '*.DS_Store'
+		}
+		resources {
+			srcDirs = ['../common/src/main/resources', 'src/main/resources']
+			include '**/*'
+			exclude '*.DS_Store'
+		}
+	}
+	test {
+			java {
+				exclude '**/*'
+			}
+	}
+}
