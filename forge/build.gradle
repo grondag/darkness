@@ -3,24 +3,52 @@
 
 buildscript {
 	dependencies {
-		classpath 'org.kohsuke:github-api:1.135'
+		classpath 'org.kohsuke:github-api:1.301'
 	}
 }
 
 plugins {
-	id 'dev.architectury.loom' version '0.10.0-SNAPSHOT'
+	id 'dev.architectury.loom' version '0.12.0-SNAPSHOT'
 	id 'maven-publish'
 	id 'org.cadixdev.licenser' version '0.6.1'
 	id 'org.ajoberstar.grgit' version '4.1.1'
 	id 'com.matthewprenger.cursegradle' version '1.4.0'
 	id 'checkstyle'
-	id 'com.modrinth.minotaur' version '1.2.1'
+	id 'com.modrinth.minotaur' version '2.2.0'
+	id "com.github.johnrengelman.shadow" version "7.0.0" apply false
 }
 
 ext.platform_name = 'forge'
-ext.forge_version = '39.0.0'
+ext.forge_version = '40.1.14'
+
+configurations {
+	bundle { transitive = false }
+	implementation.extendsFrom bundle
+}
 
 apply from: '../project_common.gradle'
+
+if (project.build_fat_jar) {
+	apply plugin: 'com.github.johnrengelman.shadow'
+
+	shadowJar {
+	    configurations = [project.configurations.bundle]
+	    classifier "dev-shadow"
+	}
+
+	remapJar {
+	    input.set shadowJar.archiveFile
+	    dependsOn shadowJar
+	    classifier null
+	}
+
+	jar {
+	    classifier "dev"
+	}
+
+	build.dependsOn shadowJar
+}
+
 apply from: 'project.gradle'
 apply from: '../gruntle_common.gradle'
 
@@ -33,10 +61,6 @@ dependencies {
 loom {
 	mixin.defaultRefmapName = project.mod_name + "-refmap.json"
 	silentMojangMappingsLicense()
-
-	if (project.hasProperty('accesswidener')) {
-		accessWidenerPath = file(project.getProperty('accesswidener'))
-	}
 }
 
 processResources {
@@ -45,6 +69,43 @@ processResources {
     filesMatching("META-INF/mods.toml") {
         expand "version": project.version
     }
+}
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			artifactId = project.archivesBaseName;
+
+			artifact(remapJar) {
+				builtBy remapJar
+			}
+
+			artifact(sourcesJar) {
+				classifier = "sources"
+				builtBy remapSourcesJar
+			}
+		}
+	}
+
+	repositories {
+		mavenLocal()
+
+		if (project.version.endsWith('LOCAL') || project.version.endsWith('SNAPSHOT')) {
+			println "Snapshot build will be local only - not pushed to public maven"
+		} else {
+	    maven {
+        url = 'sftp://maven.vram.io:22'
+        credentials {
+        	if (project.hasProperty('maven_user')) {
+						username = project.getProperty('maven_user')
+					}
+					if (project.hasProperty('maven_password')) {
+						password = project.getProperty('maven_password')
+					}
+				}
+	    }
+		}
+	}
 }
 
 // Remainder unfortunately does not work in common script due to build script class path
@@ -79,7 +140,7 @@ task github(dependsOn: build) {
 
 import com.modrinth.minotaur.TaskModrinthUpload
 
-task publishModrinth (type: TaskModrinthUpload){ // Make sure it runs after build!
+modrinth {
   if (project.hasProperty("modrinth_token") && project.hasProperty("modrinth_id")) {
 		token = project.modrinth_token
 		projectId = project.modrinth_id
@@ -88,7 +149,7 @@ task publishModrinth (type: TaskModrinthUpload){ // Make sure it runs after buil
 		versionType = project.release_type
 		// On fabric, use 'remapJar' instead of 'jar'
 		uploadFile = remapJar // This is the java jar task. If it can't find the jar, try 'jar.outputs.getFiles().asPath' in place of 'jar'
-		addGameVersion(project.minecraft_version) // Call this multiple times to add multiple game versions. There are tools that can help you generate the list of versions
-		addLoader(project.platform_name)
+		gameVersions = ["${project.minecraft_version}"]
+		loaders = ["${project.platform_name}"] // Must also be an array - no need to specify this if you're using Loom
 	}
 }
