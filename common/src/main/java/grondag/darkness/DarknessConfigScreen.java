@@ -26,7 +26,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 
 public class DarknessConfigScreen extends Screen {
 	protected final Screen parent;
@@ -40,7 +40,7 @@ public class DarknessConfigScreen extends Screen {
 	protected Checkbox darkSkylessWidget;
 
 	public DarknessConfigScreen(Screen parent) {
-		super(new TranslatableComponent("config.darkness.title"));
+		super(Component.translatable("config.darkness.title"));
 		this.parent = parent;
 	}
 
@@ -57,91 +57,91 @@ public class DarknessConfigScreen extends Screen {
 	@Override
 	protected void init() {
 		int i = 27;
-		blockLightOnlyWidget = new Checkbox(width / 2 - 100, i, 200, 20, new TranslatableComponent("config.darkness.label.block_light_only"), Darkness.blockLightOnly) {
+		blockLightOnlyWidget = new Checkbox(width / 2 - 100, i, 200, 20, Component.translatable("config.darkness.label.block_light_only"), Darkness.blockLightOnly) {
 			@Override
 			public void renderButton(PoseStack matrices, int mouseX, int mouseY, float delta) {
 				super.renderButton(matrices, mouseX, mouseY, delta);
 
 				if (isHovered) {
-					DarknessConfigScreen.this.renderTooltip(matrices, new TranslatableComponent("config.darkness.help.block_light_only"), mouseX, mouseY);
+					DarknessConfigScreen.this.renderTooltip(matrices, Component.translatable("config.darkness.help.block_light_only"), mouseX, mouseY);
 				}
 			}
 		};
 
 		i += 27;
 
-		ignoreMoonPhaseWidget = new Checkbox(width / 2 - 100, i, 200, 20, new TranslatableComponent("config.darkness.label.ignore_moon_phase"), Darkness.ignoreMoonPhase) {
+		ignoreMoonPhaseWidget = new Checkbox(width / 2 - 100, i, 200, 20, Component.translatable("config.darkness.label.ignore_moon_phase"), Darkness.ignoreMoonPhase) {
 			@Override
 			public void renderButton(PoseStack matrices, int mouseX, int mouseY, float delta) {
 				super.renderButton(matrices, mouseX, mouseY, delta);
 
 				if (isHovered) {
-					DarknessConfigScreen.this.renderTooltip(matrices, new TranslatableComponent("config.darkness.help.ignore_moon_phase"), mouseX, mouseY);
+					DarknessConfigScreen.this.renderTooltip(matrices, Component.translatable("config.darkness.help.ignore_moon_phase"), mouseX, mouseY);
 				}
 			}
 		};
 
 		i += 27;
 
-		darkOverworldWidget = new Checkbox(width / 2 - 100, i, 200, 20, new TranslatableComponent("config.darkness.label.dark_overworld"), Darkness.darkOverworld) {
+		darkOverworldWidget = new Checkbox(width / 2 - 100, i, 200, 20, Component.translatable("config.darkness.label.dark_overworld"), Darkness.darkOverworld) {
 			@Override
 			public void renderButton(PoseStack matrices, int mouseX, int mouseY, float delta) {
 				super.renderButton(matrices, mouseX, mouseY, delta);
 
 				if (isHovered) {
-					DarknessConfigScreen.this.renderTooltip(matrices, new TranslatableComponent("config.darkness.help.dark_overworld"), mouseX, mouseY);
+					DarknessConfigScreen.this.renderTooltip(matrices, Component.translatable("config.darkness.help.dark_overworld"), mouseX, mouseY);
 				}
 			}
 		};
 
 		i += 27;
 
-		darkNetherWidget = new Checkbox(width / 2 - 100, i, 200, 20, new TranslatableComponent("config.darkness.label.dark_nether"), Darkness.darkNether) {
+		darkNetherWidget = new Checkbox(width / 2 - 100, i, 200, 20, Component.translatable("config.darkness.label.dark_nether"), Darkness.darkNether) {
 			@Override
 			public void renderButton(PoseStack matrices, int mouseX, int mouseY, float delta) {
 				super.renderButton(matrices, mouseX, mouseY, delta);
 
 				if (isHovered) {
-					DarknessConfigScreen.this.renderTooltip(matrices, new TranslatableComponent("config.darkness.help.dark_nether"), mouseX, mouseY);
+					DarknessConfigScreen.this.renderTooltip(matrices, Component.translatable("config.darkness.help.dark_nether"), mouseX, mouseY);
 				}
 			}
 		};
 
 		i += 27;
 
-		darkEndWidget = new Checkbox(width / 2 - 100, i, 200, 20, new TranslatableComponent("config.darkness.label.dark_end"), Darkness.darkEnd) {
+		darkEndWidget = new Checkbox(width / 2 - 100, i, 200, 20, Component.translatable("config.darkness.label.dark_end"), Darkness.darkEnd) {
 			@Override
 			public void renderButton(PoseStack matrices, int mouseX, int mouseY, float delta) {
 				super.renderButton(matrices, mouseX, mouseY, delta);
 
 				if (isHovered) {
-					DarknessConfigScreen.this.renderTooltip(matrices, new TranslatableComponent("config.darkness.help.dark_end"), mouseX, mouseY);
+					DarknessConfigScreen.this.renderTooltip(matrices, Component.translatable("config.darkness.help.dark_end"), mouseX, mouseY);
 				}
 			}
 		};
 
 		i += 27;
 
-		darkDefaultWidget = new Checkbox(width / 2 - 100, i, 200, 20, new TranslatableComponent("config.darkness.label.dark_default"), Darkness.darkDefault) {
+		darkDefaultWidget = new Checkbox(width / 2 - 100, i, 200, 20, Component.translatable("config.darkness.label.dark_default"), Darkness.darkDefault) {
 			@Override
 			public void renderButton(PoseStack matrices, int mouseX, int mouseY, float delta) {
 				super.renderButton(matrices, mouseX, mouseY, delta);
 
 				if (isHovered) {
-					DarknessConfigScreen.this.renderTooltip(matrices, new TranslatableComponent("config.darkness.help.dark_default"), mouseX, mouseY);
+					DarknessConfigScreen.this.renderTooltip(matrices, Component.translatable("config.darkness.help.dark_default"), mouseX, mouseY);
 				}
 			}
 		};
 
 		i += 27;
 
-		darkSkylessWidget = new Checkbox(width / 2 - 100, i, 200, 20, new TranslatableComponent("config.darkness.label.dark_skyless"), Darkness.darkSkyless) {
+		darkSkylessWidget = new Checkbox(width / 2 - 100, i, 200, 20, Component.translatable("config.darkness.label.dark_skyless"), Darkness.darkSkyless) {
 			@Override
 			public void renderButton(PoseStack matrices, int mouseX, int mouseY, float delta) {
 				super.renderButton(matrices, mouseX, mouseY, delta);
 
 				if (isHovered) {
-					DarknessConfigScreen.this.renderTooltip(matrices, new TranslatableComponent("config.darkness.help.dark_skyless"), mouseX, mouseY);
+					DarknessConfigScreen.this.renderTooltip(matrices, Component.translatable("config.darkness.help.dark_skyless"), mouseX, mouseY);
 				}
 			}
 		};

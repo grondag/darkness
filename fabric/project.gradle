@@ -1,8 +1,8 @@
 dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-	modCompileOnly "com.terraformersmc:modmenu:3.2.2"
-	modRuntimeOnly "com.terraformersmc:modmenu:3.2.2"
+	modCompileOnly "com.terraformersmc:modmenu:4.0.0-beta.4"
+	modRuntimeOnly "com.terraformersmc:modmenu:4.0.0-beta.4"
 }
 
 sourceSets {
