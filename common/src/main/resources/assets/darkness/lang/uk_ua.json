@@ -1,0 +1,24 @@
+{
+	"config.darkness.title" : "True Darkness Config",
+	
+	"config.darkness.label.block_light_only": "Впливати тільки на освітлення від блоків",
+	"config.darkness.help.block_light_only": "Ділянки, освітлені небом, не будуть повністю темними",
+	
+	"config.darkness.label.ignore_moon_phase": "Ігнорувати фазу місяця",
+	"config.darkness.help.ignore_moon_phase": "Ніч справді темна, навіть коли місяць повний",
+	
+	"config.darkness.label.dark_overworld": "Темний Світ",
+	"config.darkness.help.dark_overworld": "Увімкнути темряву в світі",
+	
+	"config.darkness.label.dark_nether": "Темне Пекло",
+	"config.darkness.help.dark_nether": "Увімкнути темряву в пеклі",
+	
+	"config.darkness.label.dark_end": "Темний Енд",
+	"config.darkness.help.dark_end": "Увімкнути темряву в Краю",
+	
+	"config.darkness.label.dark_default": "Темрява в модифікованих вимірах",
+	"config.darkness.help.dark_default": "Увімкнути в модифікованих вимірах з небом",
+	
+	"config.darkness.label.dark_skyless": "Темрява в модифікованих вимірах без неба",
+	"config.darkness.help.dark_skyless": "Увімкнути в модифікованих вимірах без небом"
+}
