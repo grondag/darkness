@@ -156,7 +156,7 @@ public class DarknessConfigScreen extends Screen {
 		addRenderableWidget(darkDefaultWidget);
 		addRenderableWidget(darkSkylessWidget);
 
-		addRenderableWidget(new Button(width / 2 - 100, height - 27, 200, 20, CommonComponents.GUI_DONE, (buttonWidget) -> {
+		addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, (buttonWidget) -> {
 			Darkness.blockLightOnly = blockLightOnlyWidget.selected();
 			Darkness.ignoreMoonPhase = ignoreMoonPhaseWidget.selected();
 			Darkness.darkOverworld = darkOverworldWidget.selected();
@@ -166,7 +166,7 @@ public class DarknessConfigScreen extends Screen {
 			Darkness.darkSkyless = darkSkylessWidget.selected();
 			Darkness.saveConfig();
 			minecraft.setScreen(parent);
-		}));
+		}).bounds(width / 2 - 100, height - 27, 200, 20).build());
 	}
 
 	@Override
