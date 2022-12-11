@@ -26,7 +26,6 @@
   	"darkness.client.json"
   ],
   "depends": {
-  	"fabricloader": ">=0.14.11",
     "minecraft": ">=1.19.3",
     "java": ">=17"
   }
