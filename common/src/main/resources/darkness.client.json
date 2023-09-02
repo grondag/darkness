@@ -6,7 +6,6 @@
   "mixins": [
     "MixinGameRenderer",
 	"MixinLightTexture",
-	"MixinDynamicTexture",
     "MixinEndEffects",
 	"MixinNetherEffects"
   ],
