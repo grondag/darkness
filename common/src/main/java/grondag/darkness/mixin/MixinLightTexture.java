@@ -26,26 +26,32 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.texture.DynamicTexture;
+import com.mojang.blaze3d.platform.NativeImage;
 
+import net.minecraft.client.renderer.LightTexture;
+
+import grondag.darkness.Darkness;
 import grondag.darkness.LightmapAccess;
-import grondag.darkness.TextureAccess;
 
 @Mixin(LightTexture.class)
 public class MixinLightTexture implements LightmapAccess {
 	@Shadow
-	private DynamicTexture lightTexture;
+	private NativeImage lightPixels;
 	@Shadow
 	private float blockLightRedFlicker;
 	@Shadow
 	private boolean updateLightTexture;
 
-	@Inject(method = "<init>*", at = @At(value = "RETURN"))
-	private void afterInit(GameRenderer gameRenderer, Minecraft minecraftClient, CallbackInfo ci) {
-		((TextureAccess) lightTexture).darkness_enableUploadHook();
+	@Inject(method = "updateLightTexture", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/texture/DynamicTexture;upload()V"))
+	private void onUpload(CallbackInfo ci) {
+		if (Darkness.enabled && lightPixels != null) {
+			for (int b = 0; b < 16; b++) {
+				for (int s = 0; s < 16; s++) {
+					final int color = Darkness.darken(lightPixels.getPixelRGBA(b, s), b, s);
+					lightPixels.setPixelRGBA(b, s, color);
+				}
+			}
+		}
 	}
 
 	@Override
